@@ -52,12 +52,17 @@ class _ChildAssignmentsScreenState extends State<ChildAssignmentsScreen> {
   late ScrollController _scrollController = ScrollController()
     ..addListener(_assignmentsScrollListener);
 
+  int isAssignmentSubmitted() {
+    return _assignmentStatusTabTitle == assignedKey ? 0 : 1;
+  }
+
   void _assignmentsScrollListener() {
     if (_scrollController.offset ==
         _scrollController.position.maxScrollExtent) {
       if (context.read<AssignmentsCubit>().hasMore()) {
         context.read<AssignmentsCubit>().fetchMoreAssignments(
             childId: widget.childId,
+            isSubmitted: isAssignmentSubmitted(),
             useParentApi: context.read<AuthCubit>().isParent());
       }
     }
@@ -66,12 +71,18 @@ class _ChildAssignmentsScreenState extends State<ChildAssignmentsScreen> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      context.read<AssignmentsCubit>().fetchAssignments(
-            useParentApi: context.read<AuthCubit>().isParent(),
-            childId: widget.childId,
-          );
+      fetchAssignments();
     });
     super.initState();
+  }
+
+  void fetchAssignments() {
+    context.read<AssignmentsCubit>().fetchAssignments(
+          useParentApi: context.read<AuthCubit>().isParent(),
+          childId: widget.childId,
+          isSubmitted: isAssignmentSubmitted(),
+          subjectId: _currentlySelectedSubjectId,
+        );
   }
 
   void changeAssignmentFilter(AssignmentFilters assignmentFilter) {
@@ -144,6 +155,7 @@ class _ChildAssignmentsScreenState extends State<ChildAssignmentsScreen> {
                 setState(() {
                   _assignmentStatusTabTitle = assignedKey;
                 });
+                fetchAssignments();
               },
               titleKey: assignedKey,
             ),
@@ -156,6 +168,7 @@ class _ChildAssignmentsScreenState extends State<ChildAssignmentsScreen> {
                 setState(() {
                   _assignmentStatusTabTitle = submittedKey;
                 });
+                fetchAssignments();
               },
               titleKey: submittedKey,
             )
@@ -171,10 +184,7 @@ class _ChildAssignmentsScreenState extends State<ChildAssignmentsScreen> {
           context: context,
           appBarHeightPercentage: UiUtils.appBarBiggerHeightPercentage),
       onRefreshCallback: () {
-        context.read<AssignmentsCubit>().fetchAssignments(
-            childId: widget.childId,
-            subjectId: _currentlySelectedSubjectId,
-            useParentApi: context.read<AuthCubit>().isParent());
+        fetchAssignments();
       },
       child: SingleChildScrollView(
         controller: _scrollController,
@@ -191,19 +201,18 @@ class _ChildAssignmentsScreenState extends State<ChildAssignmentsScreen> {
                   setState(() {
                     _currentlySelectedSubjectId = subjectId;
                   });
-                  context.read<AssignmentsCubit>().fetchAssignments(
-                      subjectId: subjectId,
-                      useParentApi: context.read<AuthCubit>().isParent(),
-                      childId: widget.childId);
+                  fetchAssignments();
                 },
                 selectedSubjectId: _currentlySelectedSubjectId),
             SizedBox(
               height: MediaQuery.of(context).size.height * (0.035),
             ),
             AssignmentListContainer(
-                assignmentTabTitle: _assignmentStatusTabTitle,
-                currentSelectedSubjectId: _currentlySelectedSubjectId,
-                selectedAssignmentFilter: selectedAssignmentFilter)
+              assignmentTabTitle: _assignmentStatusTabTitle,
+              currentSelectedSubjectId: _currentlySelectedSubjectId,
+              selectedAssignmentFilter: selectedAssignmentFilter,
+              isAssignmentSubmitted: isAssignmentSubmitted(),
+            )
           ],
         ),
       ),

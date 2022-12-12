@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:eschool/utils/constants.dart';
 import 'package:eschool/utils/errorMessageKeysAndCodes.dart';
 import 'package:eschool/utils/hiveBoxKeys.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class ApiException implements Exception {
@@ -74,13 +75,24 @@ class Api {
   static String getStudentTimetableParent = "${databaseUrl}parent/timetable";
   static String getStudentExamListParent = "${databaseUrl}parent/get-exam-list";
   static String getStudentResultsParent = "${databaseUrl}parent/exam-marks";
-  static String getStudentExamDetailsParent = "${databaseUrl}parent/get-exam-details";
+  static String getStudentExamDetailsParent =
+      "${databaseUrl}parent/get-exam-details";
 
   static String generalAnnouncementsParent =
       "${databaseUrl}parent/announcements";
 
   static String getStudentTeachersParent = "${databaseUrl}parent/teachers";
   static String forgotPassword = "${databaseUrl}forgot-password";
+
+  static String getStudentClassFeesParent =
+      "${databaseUrl}parent/fees-class-list";
+  static String addFeesChoiceParent = "${databaseUrl}parent/add-fees-choice";
+  static String setFeesTransactionStatusParent =
+      "${databaseUrl}parent/fees-transaction";
+
+  static String getPaidFeesListParent = "${databaseUrl}parent/fees-paid-list";
+  static String sendFeesPaidReceiptParent =
+      "${databaseUrl}parent/fees-paid-receipt-pdf";
 
   static Future<Map<String, dynamic>> post({
     required Map<String, dynamic> body,
@@ -105,19 +117,17 @@ class Api {
           options: useAuthToken ? Options(headers: headers()) : null);
 
       if (response.data['error']) {
-
         throw ApiException(response.data['code'].toString());
       }
       return Map.from(response.data);
     } on DioError catch (e) {
-
+      print(e.response?.data);
       throw ApiException(e.error is SocketException
           ? ErrorMessageKeysAndCode.noInternetCode
           : ErrorMessageKeysAndCode.defaultErrorMessageCode);
     } on ApiException catch (e) {
       throw ApiException(e.errorMessage);
     } catch (e) {
-
       throw ApiException(ErrorMessageKeysAndCode.defaultErrorMessageKey);
     }
   }
@@ -133,13 +143,16 @@ class Api {
       final response = await dio.get(url,
           queryParameters: queryParameters,
           options: useAuthToken ? Options(headers: headers()) : null);
-
       if (response.data['error']) {
         throw ApiException(response.data['code'].toString());
       }
-
       return Map.from(response.data);
     } on DioError catch (e) {
+      print(e.error);
+
+      if (kDebugMode) {
+        print(e.response?.data);
+      }
       throw ApiException(e.error is SocketException
           ? ErrorMessageKeysAndCode.noInternetCode
           : ErrorMessageKeysAndCode.defaultErrorMessageCode);

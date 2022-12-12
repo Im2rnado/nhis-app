@@ -7,13 +7,15 @@ class AssignmentRepository {
       {int? page,
       int? assignmentId,
       int? subjectId,
+      required int isSubmitted,
       required bool useParentApi,
       required int childId}) async {
     try {
       Map<String, dynamic> queryParameters = {
         "assignment_id": assignmentId ?? 0,
         "subject_id": subjectId ?? 0,
-        "page": page ?? 0
+        "page": page ?? 0,
+        "is_submitted": isSubmitted
       };
 
       if (queryParameters['assignment_id'] == 0) {
@@ -73,7 +75,6 @@ class AssignmentRepository {
       return AssignmentSubmission.fromJson(Map.from(
           assignmentSubmissions.isEmpty ? {} : assignmentSubmissions.first));
     } catch (e) {
-
       throw ApiException(e.toString());
     }
   }

@@ -129,8 +129,8 @@ class NotificationUtility {
 
   static Future<void> createLocalNotification(
       {required bool dimissable, required RemoteMessage message}) async {
-    String title = message.data['title'] ?? "";
-    String body = message.data['body'] ?? "";
+    String title = message.notification?.title ?? "";
+    String body = message.notification?.body ?? "";
 
     await AwesomeNotifications().createNotification(
       content: NotificationContent(

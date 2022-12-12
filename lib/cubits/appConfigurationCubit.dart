@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:eschool/data/models/appConfiguration.dart';
+import 'package:eschool/data/models/feesSettings.dart';
 import 'package:eschool/data/repositories/systemInfoRepository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -88,5 +89,12 @@ class AppConfigurationCubit extends Cubit<AppConfigurationState> {
       return getAppConfiguration().forceAppUpdate == "1";
     }
     return false;
+  }
+
+  FeesSettings getFeesSettings() {
+    if (state is AppConfigurationFetchSuccess) {
+      return getAppConfiguration().feesSettings;
+    }
+    return FeesSettings.fromJson(Map.from({}));
   }
 }

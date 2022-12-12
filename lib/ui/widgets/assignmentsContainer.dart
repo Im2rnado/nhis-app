@@ -48,7 +48,9 @@ class _AssignmentsContainerState extends State<AssignmentsContainer> {
         _scrollController.position.maxScrollExtent) {
       if (context.read<AssignmentsCubit>().hasMore()) {
         context.read<AssignmentsCubit>().fetchMoreAssignments(
-            childId: 0, useParentApi: context.read<AuthCubit>().isParent());
+            childId: 0,
+            isSubmitted: 0,
+            useParentApi: context.read<AuthCubit>().isParent());
       }
     }
   }
@@ -57,8 +59,7 @@ class _AssignmentsContainerState extends State<AssignmentsContainer> {
   void initState() {
     Future.delayed(Duration.zero, () {
       if (!widget.isForBottomMenuBackground) {
-        context.read<AssignmentsCubit>().fetchAssignments(
-            childId: 0, useParentApi: context.read<AuthCubit>().isParent());
+        fetchAssignments();
       }
     });
     super.initState();
@@ -69,6 +70,19 @@ class _AssignmentsContainerState extends State<AssignmentsContainer> {
     _scrollController.removeListener(_assignmentsScrollListener);
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void fetchAssignments() {
+    context.read<AssignmentsCubit>().fetchAssignments(
+        childId: 0,
+        isSubmitted: context
+            .read<AssignmentsTabSelectionCubit>()
+            .isAssignmentSubmitted(),
+        subjectId: context
+            .read<AssignmentsTabSelectionCubit>()
+            .state
+            .assignmentFilterBySubjectId,
+        useParentApi: context.read<AuthCubit>().isParent());
   }
 
   void changeAssignmentFilter(AssignmentFilters assignmentFilter) {
@@ -93,6 +107,7 @@ class _AssignmentsContainerState extends State<AssignmentsContainer> {
     return BlocBuilder<StudentSubjectsAndSlidersCubit,
         StudentSubjectsAndSlidersState>(
       builder: (context, state) {
+        //
         List<Subject> subjects = context
             .read<StudentSubjectsAndSlidersCubit>()
             .getSubjectsForAssignmentContainer();
@@ -106,11 +121,11 @@ class _AssignmentsContainerState extends State<AssignmentsContainer> {
                   onTapSubject: (int subjectId) {
                     context
                         .read<AssignmentsTabSelectionCubit>()
-                        .changeAssignmentFilterBySubjectId(subjectId);
-                    context.read<AssignmentsCubit>().fetchAssignments(
-                        subjectId: subjectId,
-                        childId: 0,
-                        useParentApi: context.read<AuthCubit>().isParent());
+                        .changeAssignmentFilterBySubjectId(
+                          subjectId,
+                        );
+
+                    fetchAssignments();
                   },
                   selectedSubjectId: state.assignmentFilterBySubjectId);
             });
@@ -179,6 +194,7 @@ class _AssignmentsContainerState extends State<AssignmentsContainer> {
                     context
                         .read<AssignmentsTabSelectionCubit>()
                         .changeAssignmentFilterTabTitle(assignedKey);
+                    fetchAssignments();
                   },
                   titleKey: assignedKey,
                 );
@@ -196,6 +212,7 @@ class _AssignmentsContainerState extends State<AssignmentsContainer> {
                     context
                         .read<AssignmentsTabSelectionCubit>()
                         .changeAssignmentFilterTabTitle(submittedKey);
+                    fetchAssignments();
                   },
                   titleKey: submittedKey,
                 );
@@ -224,10 +241,14 @@ class _AssignmentsContainerState extends State<AssignmentsContainer> {
                     AssignmentsTabSelectionState>(
                   builder: (context, state) {
                     return AssignmentListContainer(
-                        assignmentTabTitle: state.assignmentFilterTabTitle,
-                        currentSelectedSubjectId:
-                            state.assignmentFilterBySubjectId,
-                        selectedAssignmentFilter: selectedAssignmentFilter);
+                      assignmentTabTitle: state.assignmentFilterTabTitle,
+                      currentSelectedSubjectId:
+                          state.assignmentFilterBySubjectId,
+                      selectedAssignmentFilter: selectedAssignmentFilter,
+                      isAssignmentSubmitted: context
+                          .read<AssignmentsTabSelectionCubit>()
+                          .isAssignmentSubmitted(),
+                    );
                   },
                 ),
               ],
@@ -243,13 +264,7 @@ class _AssignmentsContainerState extends State<AssignmentsContainer> {
               context: context,
               appBarHeightPercentage: UiUtils.appBarBiggerHeightPercentage),
           onRefreshCallback: () {
-            context.read<AssignmentsCubit>().fetchAssignments(
-                childId: 0,
-                subjectId: context
-                    .read<AssignmentsTabSelectionCubit>()
-                    .state
-                    .assignmentFilterBySubjectId,
-                useParentApi: context.read<AuthCubit>().isParent());
+            fetchAssignments();
           },
         ),
         Align(

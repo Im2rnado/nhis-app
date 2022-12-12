@@ -29,6 +29,15 @@ const String dueDateOldestKey = "dueDateOldest";
 const String dueKey = "due";
 const String assignmentKey = "assignment";
 
+const String feesKey = "fees";
+const String statusKey = "status";
+const String amountKey = "amount";
+const String pendingKey = "pending";
+const String paidKey = "paid";
+const String receiptKey = "receipt";
+
+const String payNowKey = "payNow";
+
 const String subjectNameKey = "subjectName";
 const String assignmentNameKey = "assignmentName";
 const String retryKey = "retry";
@@ -213,7 +222,6 @@ const String newUpdateAvailableKey = "newUpdateAvailable";
 
 const String featureDisableInDemoVersionKey = "featureDisableInDemoVersion";
 
-
 const String allExamsKey = "allExams";
 const String upComingKey = "upComing";
 const String onGoingKey = "onGoing";
@@ -224,3 +232,11 @@ const String examTimeTableKey = "examTimeTable";
 const String noExamsFoundKey = "noExamsFound";
 const String noResultPublishedKey = "noResultPublished";
 const String noExamTimeTableFoundKey = "noExamTimeTableFound";
+
+const String paymentSuccessTitleKey = "paymentSuccessTitle";
+const String paymentFailureTitleKey = "paymentFailureTitle";
+const String paymentPendingTitleKey = "paymentPendingTitle";
+
+const String paymentSuccessMsgKey = "paymentSuccessMsg";
+const String paymentFailureMsgKey = "paymentFailureMsg";
+const String paymentPendingMsgKey = "paymentPendingMsg";

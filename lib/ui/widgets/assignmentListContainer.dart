@@ -19,12 +19,14 @@ class AssignmentListContainer extends StatelessWidget {
   final int? childId;
   final int currentSelectedSubjectId;
   final AssignmentFilters selectedAssignmentFilter;
+  final int isAssignmentSubmitted;
   const AssignmentListContainer(
       {Key? key,
       required this.assignmentTabTitle,
       required this.currentSelectedSubjectId,
       this.childId,
-      required this.selectedAssignmentFilter})
+      required this.selectedAssignmentFilter,
+      required this.isAssignmentSubmitted})
       : super(key: key);
 
   Widget _buildShimmerLoadingAssignmentContainer(BuildContext context) {
@@ -126,6 +128,7 @@ class AssignmentListContainer extends StatelessWidget {
                 onPressed: () {
                   context.read<AssignmentsCubit>().fetchMoreAssignments(
                       childId: childId ?? 0,
+                      isSubmitted: isAssignmentSubmitted,
                       useParentApi: context.read<AuthCubit>().isParent());
                 }),
           );
@@ -343,6 +346,7 @@ class AssignmentListContainer extends StatelessWidget {
                       page: state.page,
                       subjectId: state.subjectId,
                       childId: childId ?? 0,
+                      isSubmitted: isAssignmentSubmitted,
                       useParentApi: context.read<AuthCubit>().isParent());
                 },
                 errorMessageCode: state.errorMessage),

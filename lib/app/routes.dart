@@ -6,6 +6,7 @@ import 'package:eschool/ui/screens/auth/studentLoginScreen.dart';
 import 'package:eschool/ui/screens/chapterDetails/chapterDetailsScreen.dart';
 import 'package:eschool/ui/screens/childAssignmentsScreen.dart';
 import 'package:eschool/ui/screens/childAttendanceScreen.dart';
+import 'package:eschool/ui/screens/childDetailMenuScreen.dart';
 import 'package:eschool/ui/screens/childResultsScreen.dart';
 import 'package:eschool/ui/screens/childTeachers.dart';
 import 'package:eschool/ui/screens/childTimeTableScreen.dart';
@@ -13,6 +14,9 @@ import 'package:eschool/ui/screens/contactUsScreen.dart';
 import 'package:eschool/ui/screens/exam/examTimeTableScreen.dart';
 import 'package:eschool/ui/screens/examScreen.dart';
 import 'package:eschool/ui/screens/faqsScreen.dart';
+import 'package:eschool/ui/screens/fees/feesDetailsScreen.dart';
+import 'package:eschool/ui/screens/fees/feesPaymentVerification.dart';
+import 'package:eschool/ui/screens/fees/feesStatusScreen.dart';
 import 'package:eschool/ui/screens/holidaysScreen.dart';
 import 'package:eschool/ui/screens/home/homeScreen.dart';
 import 'package:eschool/ui/screens/noticeBoardScreen.dart';
@@ -64,6 +68,8 @@ class Routes {
 
   static const String studentDetails = "parent/studentDetails";
 
+  static const String parentMenu = "parent/studentDetailsMenu";
+
   static const String topicDetails = "/topicDetails";
 
   static const String playVideo = "/playVideo";
@@ -85,6 +91,13 @@ class Routes {
   static const String noticeBoard = "/noticeBoard";
 
   static const String holidays = "/holidays";
+
+  static const String childFees = "/fees";
+
+  static const String feesDetails = "/feesDetails";
+
+  static const String paymentVerify = "/paymentVerify";
+
   static String currentRoute = splash;
 
   static Route<dynamic> onGenerateRouted(RouteSettings routeSettings) {
@@ -125,7 +138,7 @@ class Routes {
         {
           return ExamScreen.route(routeSettings);
         }
-        case examTimeTable:
+      case examTimeTable:
         {
           return ExamTimeTableScreen.route(routeSettings);
         }
@@ -222,6 +235,22 @@ class Routes {
       case holidays:
         {
           return HolidaysScreen.route(routeSettings);
+        }
+      case childFees:
+        {
+          return FeesStatusScreen.route(routeSettings);
+        }
+      case feesDetails:
+        {
+          return FeesDetailsScreen.route(routeSettings);
+        }
+
+      case paymentVerify:
+        return FeesPaymentVerification.route(routeSettings);
+
+      case parentMenu:
+        {
+          return ChildDetailMenuScreen.route(routeSettings);
         }
       default:
         {

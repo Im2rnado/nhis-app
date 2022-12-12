@@ -1,5 +1,5 @@
-import 'package:better_open_file/better_open_file.dart';
 import 'package:eschool/app/appLocalization.dart';
+import 'package:eschool/cubits/appConfigurationCubit.dart';
 import 'package:eschool/cubits/downloadFileCubit.dart';
 import 'package:eschool/data/models/studyMaterial.dart';
 import 'package:eschool/data/repositories/subjectRepository.dart';
@@ -10,6 +10,7 @@ import 'package:eschool/utils/errorMessageKeysAndCodes.dart';
 import 'package:eschool/utils/labelKeys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class UiUtils {
@@ -268,7 +269,7 @@ class UiUtils {
               backgroundColor: Theme.of(context).colorScheme.error);
         } else {
           try {
-            OpenFile.open(result['filePath'].toString());
+            OpenFilex.open(result['filePath'].toString());
           } catch (e) {
             showCustomSnackBar(
                 context: context,
@@ -349,6 +350,22 @@ class UiUtils {
 
   static bool isDemoVersionEnable() {
     //If isDemoVersion is not declarer then it return always false
-    return false;
+    return true;
+  }
+
+  //0 = Pending , 1 = Paid ˆset according to API response.
+  static String getStudentFeesStatusKey(int status) {
+    if (status == 0) {
+      return pendingKey;
+    }
+    if (status == 1) {
+      return paidKey;
+    }
+    return "";
+  }
+
+  static String formatAmount(
+      {required String strVal, required BuildContext context}) {
+    return "$strVal ${context.read<AppConfigurationCubit>().getFeesSettings().currencySymbol}";
   }
 }

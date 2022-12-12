@@ -1,13 +1,19 @@
+import 'package:dio/dio.dart';
 import 'package:eschool/data/models/academicYear.dart';
 import 'package:eschool/data/models/attendanceDay.dart';
 import 'package:eschool/data/models/coreSubject.dart';
 import 'package:eschool/data/models/electiveSubject.dart';
 import 'package:eschool/data/models/exam.dart';
+import 'package:eschool/data/models/fees.dart';
+import 'package:eschool/data/models/paidFees.dart';
 import 'package:eschool/data/models/parent.dart';
 import 'package:eschool/data/models/result.dart';
 import 'package:eschool/data/models/timeTableSlot.dart';
+import 'package:eschool/utils/stripeService.dart';
 import 'package:eschool/utils/api.dart';
+import 'package:eschool/utils/errorMessageKeysAndCodes.dart';
 import 'package:eschool/utils/hiveBoxKeys.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class StudentRepository {
@@ -156,7 +162,6 @@ class StudentRepository {
             .toList()
       };
     } catch (e) {
-
       throw ApiException(e.toString());
     }
   }
@@ -199,20 +204,22 @@ class StudentRepository {
   //
   //This method is used to fetch exams list
   Future<List<Exam>> fetchExamsList(
-      {required bool useParentApi, required int childId,required int examStatus}) async {
+      {required bool useParentApi,
+      required int childId,
+      required int examStatus}) async {
     try {
-
       final result = await Api.get(
           url:
-          useParentApi ? Api.getStudentExamListParent : Api.studentExamList,
+              useParentApi ? Api.getStudentExamListParent : Api.studentExamList,
           useAuthToken: true,
-          queryParameters: useParentApi ? {"child_id": childId,'status':examStatus} : {'status':examStatus});
+          queryParameters: useParentApi
+              ? {"child_id": childId, 'status': examStatus}
+              : {'status': examStatus});
 
       return (result['data'] as List)
           .map((e) => Exam.fromExamJson(Map.from(e)))
           .toList();
     } catch (e) {
-
       throw ApiException(e.toString());
     }
   }
@@ -221,13 +228,13 @@ class StudentRepository {
   //This method is used to fetch time-table of particular exam
   Future<List<ExamTimeTable>> fetchExamTimeTable(
       {required bool useParentApi,
-        required int childId,
-        required int examId}) async {
+      required int childId,
+      required int examId}) async {
     try {
-
       final result = await Api.get(
-          url:
-          useParentApi ? Api.getStudentExamDetailsParent : Api.studentExamDetails,
+          url: useParentApi
+              ? Api.getStudentExamDetailsParent
+              : Api.studentExamDetails,
           useAuthToken: true,
           queryParameters: useParentApi
               ? {"child_id": childId, "exam_id": examId}
@@ -237,8 +244,123 @@ class StudentRepository {
           .map((e) => ExamTimeTable.fromJson(Map.from(e)))
           .toList();
     } catch (e) {
-
       throw ApiException(e.toString());
+    }
+  }
+
+  Future<List<PaidFees>> fetchFeesList({required int childId}) async {
+    try {
+      final result = await Api.get(
+          url: Api.getPaidFeesListParent,
+          useAuthToken: true,
+          queryParameters: {
+            "child_id": childId,
+          });
+      print("response -- ${result['data'] as List}");
+      return (result['data'] as List)
+          .map((e) => PaidFees.fromJson(Map.from(e)))
+          .toList();
+    } catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
+
+  Future<String> sendFeesReceipt({required int feesPaidId}) async {
+    try {
+      final result = await Api.get(
+          url: Api.sendFeesPaidReceiptParent,
+          useAuthToken: true,
+          queryParameters: {"fees_paid_id": feesPaidId});
+
+      return (result['message'] as String);
+    } catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
+
+  Future<List<Fees>> fetchDetailedFees({required int classSectionId}) async {
+    //<Fees>
+    try {
+      final result = await Api.get(
+          url: Api.getStudentClassFeesParent,
+          useAuthToken: true,
+          queryParameters: {
+            "class_section_id": classSectionId,
+          });
+
+      print("fees details ${result['data']} - ${result['due_data']}");
+      List<Fees> tempList = (result['data'] as List)
+          .map((e) => Fees.fromFeesJson(Map.from(e), dueData: false))
+          .toList();
+      if (result['due_data'] != null)
+        tempList.add(
+            Fees.fromFeesJson(Map.from(result['due_data']), dueData: true));
+      return tempList;
+    } catch (e) {
+      print("exception @ FeesDetails ${e.toString()}");
+      throw ApiException(e.toString());
+    }
+  }
+
+  Future<Map> setFeesChoices(
+      {required List<int> types, required int childId}) async {
+    try {
+      final body = {"fees_type_id": types};
+
+      final result = await Api.post(
+          body: body,
+          url: Api.addFeesChoiceParent,
+          useAuthToken: true,
+          queryParameters: {"child_id": childId});
+      return result["payment_gateway_details"];
+    } catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
+
+  Future<void> setFeesTransactionStatus(
+      {required String transactionId,
+      // required int status,
+      required int childId,
+      String? paymentId,
+      String? paymentSignature}) async {
+    try {
+      await Api.post(
+          url: Api.setFeesTransactionStatusParent,
+          useAuthToken: true,
+          body: {
+            "transaction_id": transactionId,
+            "child_id": childId,
+            //both for razorpay only
+            if (paymentId != null) "payment_id": paymentId,
+            if (paymentSignature != null) "payment_signature": paymentSignature,
+          });
+    } catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
+
+  Future<String> confirmStripePayment(
+      {required String paymentIntentId,
+      required String paymentSecretKey}) async {
+    try {
+      var response =
+          await Dio().post('${StripeService.paymentApiUrl}/$paymentIntentId',
+              options: Options(headers: {
+                'Authorization': 'Bearer $paymentSecretKey',
+                'Content-Type': 'application/x-www-form-urlencoded'
+              }));
+      var getdata = Map.from(response.data);
+      final statusOfTransaction = (getdata['status'] ?? "").toString();
+      return statusOfTransaction;
+    } on PlatformException catch (err) {
+      print(err.toString());
+      throw ApiException(
+          StripeService.getPlatformExceptionErrorResult(err).message ??
+              ErrorMessageKeysAndCode.defaultErrorMessageCode);
+    } catch (error) {
+      print(error.toString());
+      throw ApiException(ErrorMessageKeysAndCode.defaultErrorMessageCode);
     }
   }
 }

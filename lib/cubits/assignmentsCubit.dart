@@ -63,6 +63,7 @@ class AssignmentsCubit extends Cubit<AssignmentsState> {
       {int? page,
       int? assignmentId,
       int? subjectId,
+      required int isSubmitted,
       required int childId,
       required bool useParentApi}) {
     emit(AssignmentsFetchInProgress());
@@ -72,7 +73,8 @@ class AssignmentsCubit extends Cubit<AssignmentsState> {
             useParentApi: useParentApi,
             assignmentId: assignmentId,
             page: page,
-            subjectId: subjectId)
+            subjectId: subjectId,
+            isSubmitted: isSubmitted)
         .then((value) => emit(AssignmentsFetchSuccess(
             fetchMoreAssignmentsInProgress: false,
             subjectId: subjectId,
@@ -113,7 +115,9 @@ class AssignmentsCubit extends Cubit<AssignmentsState> {
   }
 
   void fetchMoreAssignments(
-      {required int childId, required bool useParentApi}) async {
+      {required int childId,
+      required bool useParentApi,
+      required int isSubmitted}) async {
     if (state is AssignmentsFetchSuccess) {
       if ((state as AssignmentsFetchSuccess).fetchMoreAssignmentsInProgress) {
         return;
@@ -127,6 +131,7 @@ class AssignmentsCubit extends Cubit<AssignmentsState> {
             await _assignmentRepository.fetchAssignments(
           childId: childId,
           useParentApi: useParentApi,
+          isSubmitted: isSubmitted,
           page: (state as AssignmentsFetchSuccess).currentPage + 1,
           subjectId: (state as AssignmentsFetchSuccess).subjectId,
         );

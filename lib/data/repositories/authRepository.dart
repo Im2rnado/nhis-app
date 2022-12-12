@@ -78,6 +78,7 @@ class AuthRepository {
         "student": Student.fromJson(Map.from(result['data']))
       };
     } catch (e) {
+      print(e.toString());
 
       throw ApiException(e.toString());
     }
@@ -87,7 +88,11 @@ class AuthRepository {
       {required String email, required String password}) async {
     try {
       final fcmToken = await FirebaseMessaging.instance.getToken();
-      final body = {"password": password, "email": email, "fcm_id": fcmToken};
+      final body = {
+        "password": password,
+        "email": email,
+        "fcm_id": fcmToken,
+      };
 
       final result =
           await Api.post(body: body, url: Api.parentLogin, useAuthToken: false);
@@ -97,7 +102,6 @@ class AuthRepository {
         "parent": Parent.fromJson(Map.from(result['data']))
       };
     } catch (e) {
-
       throw ApiException(e.toString());
     }
   }

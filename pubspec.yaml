@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.2+3
+version: 1.0.4+5
 
 environment:
   sdk: ">=2.16.1 <3.0.0"
@@ -37,37 +37,40 @@ dependencies:
   flutter_bloc: 
   flutter_svg: ^1.0.3
 
-  google_fonts: ^2.3.1
+  google_fonts: ^3.0.1
   dotted_border: ^2.0.0+2
   table_calendar: ^3.0.4
   dio: ^4.0.6
   lottie: ^1.2.2
-  showcaseview: ^1.1.5
+  showcaseview: ^2.0.0+1
   hive: ^2.1.0
   hive_flutter: ^1.1.0
   equatable: ^2.0.3
   cached_network_image: ^3.2.0
   shimmer:
   path_provider: ^2.0.9
-  better_open_file:
   url_launcher:
   youtube_player_flutter: ^8.0.0
   video_player:
   file_picker: 
   external_path: ^1.0.1
-  permission_handler: ^9.2.0
+  permission_handler: ^10.2.0
   timeago: ^3.2.2
-  firebase_messaging: ^11.4.0
-  firebase_core: ^1.17.0
-  awesome_notifications: 0.7.0-beta.2 
+  firebase_messaging: 
+  firebase_core: ^2.1.1
+  awesome_notifications: ^0.7.4+1 
   carousel_slider: ^4.1.1
-  flutter_html: any
-  package_info_plus: ^1.4.2
+  flutter_html: ^3.0.0-alpha.6
+  package_info_plus: ^3.0.1
+  open_filex:
+
+  razorpay_flutter: ^1.3.0
+  flutter_stripe: ^7.0.0
 
 
 dev_dependencies:
   change_app_package_name: ^1.1.0
-  flutter_lints: ^1.0.0
+  flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
 

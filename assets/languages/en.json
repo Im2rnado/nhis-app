@@ -175,5 +175,18 @@
   "noExamsFound": "Yee.. No Exam found!",
   "noResultPublished": "Results not published yet..!",
   "noExamTimeTableFound" : "No Timetable Added",
-  "examTimeTable" : "Exam Timetable"
+  "examTimeTable" : "Exam Timetable",
+  "fees":"Fees",
+  "status": "Status",
+  "amount":"Amount",
+  "pending":"Pending",
+  "paid": "Paid",
+  "receipt": "Receipt",
+  "payNow":"Pay Now",  
+  "paymentSuccessTitle": "Success",
+  "paymentSuccessMsg": "Fees Paid Successfully",
+  "paymentFailureTitle": "Failed",  
+  "paymentFailureMsg": "Fees Payment Failed, Please Try again !",
+  "paymentPendingTitle": "Pending",  
+  "paymentPendingMsg": "Please wait ⏳, we are verifying your payment"
 }

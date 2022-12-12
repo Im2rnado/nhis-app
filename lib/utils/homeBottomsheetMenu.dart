@@ -23,7 +23,7 @@ final List<Menu> homeBottomSheetMenu = [
       iconUrl: UiUtils.getImagePath("parent_icon.svg"),
       title: parentProfileKey),
   Menu(iconUrl: UiUtils.getImagePath("holiday_icon.svg"), title: holidaysKey),
-  Menu(iconUrl: UiUtils.getImagePath("setting_icon.svg"), title: settingsKey),
   Menu(iconUrl: UiUtils.getImagePath("exam_icon.svg"), title: examsKey),
   Menu(iconUrl: UiUtils.getImagePath("result_icon.svg"), title: resultKey),
+  Menu(iconUrl: UiUtils.getImagePath("setting_icon.svg"), title: settingsKey),
 ];

@@ -1,3 +1,4 @@
+import 'package:eschool/data/models/feesSettings.dart';
 import 'package:eschool/data/models/academicYear.dart';
 
 class AppConfiguration {
@@ -18,6 +19,7 @@ class AppConfiguration {
   late final AcademicYear academicYear;
   late final String schoolName;
   late final String schoolTagline;
+  late final FeesSettings feesSettings;
 
   AppConfiguration.fromJson(Map<String, dynamic> json) {
     appLink = json['app_link'] ?? "";
@@ -29,5 +31,6 @@ class AppConfiguration {
     schoolName = json['school_name'] ?? "";
     schoolTagline = json['school_tagline'] ?? "";
     academicYear = AcademicYear.fromJson(json['session_year'] ?? {});
+    feesSettings = FeesSettings.fromJson(json['fees_settings'] ?? {});
   }
 }
