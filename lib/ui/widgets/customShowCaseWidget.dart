@@ -18,7 +18,7 @@ class CustomShowCaseWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Showcase(
         showArrow: false,
-        overlayPadding: EdgeInsets.only(top: 5),
+        targetPadding: EdgeInsets.only(top: 5),
         textColor: Theme.of(context).colorScheme.secondary,
         showcaseBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
         shapeBorder: shapeBorder ?? CircleBorder(),
