@@ -20,8 +20,8 @@ class CustomShowCaseWidget extends StatelessWidget {
         showArrow: false,
         targetPadding: EdgeInsets.only(top: 5),
         textColor: Theme.of(context).colorScheme.secondary,
-        showcaseBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        shapeBorder: shapeBorder ?? CircleBorder(),
+        tooltipBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        targetShapeBorder: shapeBorder ?? CircleBorder(),
         key: globalKey,
         child: child,
         description: description);
