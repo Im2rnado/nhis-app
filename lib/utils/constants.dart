@@ -31,7 +31,7 @@ const String notificationChannelKey = "basic_channel";
 
 //Set demo verion this when upload this code to codecanyon
 //Is demo version
-//const bool isDemoVersion = false;
+const bool isDemoVersion = false;
 
 String getExamStatusTypeKey(String examStatus) {
   if (examStatus == "0") {
