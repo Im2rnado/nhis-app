@@ -1,4 +1,3 @@
-//import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:eschool/app/appLocalization.dart';
 import 'package:eschool/app/routes.dart';
@@ -6,8 +5,12 @@ import 'package:eschool/cubits/appConfigurationCubit.dart';
 import 'package:eschool/cubits/appLocalizationCubit.dart';
 import 'package:eschool/cubits/authCubit.dart';
 import 'package:eschool/cubits/examCubit.dart';
+import 'package:eschool/cubits/feesPaymentCubit.dart';
+import 'package:eschool/cubits/feesReceiptCubit.dart';
 import 'package:eschool/cubits/noticeBoardCubit.dart';
 import 'package:eschool/cubits/notificationSettingsCubit.dart';
+import 'package:eschool/cubits/postFeesPaymentCubit.dart';
+import 'package:eschool/cubits/studentFeesCubit.dart';
 import 'package:eschool/cubits/studentSubjectAndSlidersCubit.dart';
 import 'package:eschool/data/repositories/announcementRepository.dart';
 import 'package:eschool/data/repositories/authRepository.dart';
@@ -114,7 +117,18 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider<ExamDetailsCubit>(
           create: (context) => ExamDetailsCubit(StudentRepository()),
-        )
+        ),
+
+        //
+        BlocProvider<StudentFeesCubit>(
+          create: (context) => StudentFeesCubit(StudentRepository()),
+        ),
+        BlocProvider<FeesPaymentCubit>(
+            create: (context) => FeesPaymentCubit(StudentRepository())),
+        BlocProvider<PostFeesPaymentCubit>(
+            create: (context) => PostFeesPaymentCubit(StudentRepository())),
+        BlocProvider<FeesReceiptCubit>(
+            create: (context) => FeesReceiptCubit(StudentRepository())),
       ],
       child: Builder(builder: (context) {
         final currentLanguage =

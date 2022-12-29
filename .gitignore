@@ -7,3 +7,4 @@ doc/api/
 .flutter-plugins
 .pub-cache/
 .pub/
+lib/generated_plugin_registrant.dart
