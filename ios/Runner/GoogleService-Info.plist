@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>66041161235-g42vbercqfuqakl6u5r46jutb21qdbpa.apps.googleusercontent.com</string>
+	<string>292156225676-1jse2g5j1pk3a55otbrniuj9k9142aae.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.66041161235-g42vbercqfuqakl6u5r46jutb21qdbpa</string>
+	<string>com.googleusercontent.apps.292156225676-1jse2g5j1pk3a55otbrniuj9k9142aae</string>
 	<key>API_KEY</key>
-	<string>AIzaSyC0YgNx9Fphx3y9KyNjqTod5JwcpdpZXgk</string>
+	<string>AIzaSyDajPyP6t_vvUv1CYBa4l8DJcyOzz2KMMk</string>
 	<key>GCM_SENDER_ID</key>
-	<string>66041161235</string>
+	<string>292156225676</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.wrteam.eschool</string>
+	<string>com.bedro.nhis</string>
 	<key>PROJECT_ID</key>
-	<string>e-school-ee2e7</string>
+	<string>nhis-app1</string>
 	<key>STORAGE_BUCKET</key>
-	<string>e-school-ee2e7.appspot.com</string>
+	<string>nhis-app1.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:66041161235:ios:0c7a0e05f21c292e05c1e6</string>
+	<string>1:292156225676:ios:ae277edcf51bc80ac6a3a9</string>
 </dict>
 </plist>
