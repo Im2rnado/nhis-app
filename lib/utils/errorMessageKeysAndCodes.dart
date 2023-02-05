@@ -15,6 +15,8 @@ class ErrorMessageKeysAndCode {
   static String canNotSendResetPasswordRequestKey =
       "canNotSendResetPasswordRequest";
 
+  static String examOnlineAttendedKey = "examOnlineAttended";
+
   //These are ui side error codes
 
   static const String permissionNotGivenCode = "300";
@@ -42,6 +44,10 @@ class ErrorMessageKeysAndCode {
 
     if (errorCode == "109") {
       return invalidPasswordKey;
+    }
+
+    if (errorCode == "105") {
+      return examOnlineAttendedKey;
     }
     if (errorCode == permissionNotGivenCode) {
       return permissionsNotGivenKey;

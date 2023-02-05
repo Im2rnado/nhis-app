@@ -1,27 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:eschool/app/appLocalization.dart';
-import 'package:eschool/app/routes.dart';
-import 'package:eschool/cubits/appConfigurationCubit.dart';
-import 'package:eschool/cubits/appLocalizationCubit.dart';
-import 'package:eschool/cubits/authCubit.dart';
-import 'package:eschool/cubits/examCubit.dart';
-import 'package:eschool/cubits/feesPaymentCubit.dart';
-import 'package:eschool/cubits/feesReceiptCubit.dart';
-import 'package:eschool/cubits/noticeBoardCubit.dart';
-import 'package:eschool/cubits/notificationSettingsCubit.dart';
-import 'package:eschool/cubits/postFeesPaymentCubit.dart';
-import 'package:eschool/cubits/studentFeesCubit.dart';
-import 'package:eschool/cubits/studentSubjectAndSlidersCubit.dart';
-import 'package:eschool/data/repositories/announcementRepository.dart';
-import 'package:eschool/data/repositories/authRepository.dart';
-import 'package:eschool/data/repositories/settingsRepository.dart';
-import 'package:eschool/data/repositories/studentRepository.dart';
-import 'package:eschool/data/repositories/systemInfoRepository.dart';
-import 'package:eschool/ui/styles/colors.dart';
-import 'package:eschool/utils/appLanguages.dart';
-import 'package:eschool/utils/hiveBoxKeys.dart';
-import 'package:eschool/utils/notificationUtility.dart';
-import 'package:eschool/utils/uiUtils.dart';
+import 'package:eschool/cubits/resultsCubit.dart';
+import 'package:eschool/cubits/resultsOnlineCubit.dart';
+import 'package:eschool/data/repositories/resultRepository.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +10,43 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
+import 'package:eschool/app/appLocalization.dart';
+import 'package:eschool/app/routes.dart';
+
+import 'package:eschool/cubits/appConfigurationCubit.dart';
+import 'package:eschool/cubits/appLocalizationCubit.dart';
+import 'package:eschool/cubits/authCubit.dart';
+import 'package:eschool/cubits/examDetailsCubit.dart';
+import 'package:eschool/cubits/examsOnlineCubit.dart';
+import 'package:eschool/cubits/feesPaymentCubit.dart';
+import 'package:eschool/cubits/feesReceiptCubit.dart';
+import 'package:eschool/cubits/noticeBoardCubit.dart';
+import 'package:eschool/cubits/notificationSettingsCubit.dart';
+import 'package:eschool/cubits/postFeesPaymentCubit.dart';
+import 'package:eschool/cubits/reportTabSelectionCubit.dart';
+import 'package:eschool/cubits/resultTabSelectionCubit.dart';
+import 'package:eschool/cubits/studentFeesCubit.dart';
+import 'package:eschool/cubits/studentSubjectAndSlidersCubit.dart';
+import 'package:eschool/cubits/examTabSelectionCubit.dart';
+
+import 'package:eschool/data/repositories/announcementRepository.dart';
+import 'package:eschool/data/repositories/authRepository.dart';
+import 'package:eschool/data/repositories/examRepository.dart';
+import 'package:eschool/data/repositories/settingsRepository.dart';
+import 'package:eschool/data/repositories/studentRepository.dart';
+import 'package:eschool/data/repositories/systemInfoRepository.dart';
+
+import 'package:eschool/ui/screens/exam/onlineExam/cubits/examOnlineCubit.dart';
+import 'package:eschool/ui/screens/reports/cubits/onlineExamReportCubit.dart';
+import 'package:eschool/ui/screens/reports/cubits/assignmentReportCubit.dart';
+import 'package:eschool/ui/screens/reports/repositories/reportRepository.dart';
+import 'package:eschool/ui/styles/colors.dart';
+
+import 'package:eschool/utils/appLanguages.dart';
+import 'package:eschool/utils/hiveBoxKeys.dart';
+import 'package:eschool/utils/notificationUtility.dart';
+import 'package:eschool/utils/uiUtils.dart';
 
 Future<void> initializeApp() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -129,6 +146,26 @@ class _MyAppState extends State<MyApp> {
             create: (context) => PostFeesPaymentCubit(StudentRepository())),
         BlocProvider<FeesReceiptCubit>(
             create: (context) => FeesReceiptCubit(StudentRepository())),
+
+        BlocProvider<ResultTabSelectionCubit>(
+            create: (_) => ResultTabSelectionCubit()),
+        BlocProvider<ReportTabSelectionCubit>(
+            create: (_) => ReportTabSelectionCubit()),
+
+        BlocProvider<OnlineExamReportCubit>(
+            create: (_) => OnlineExamReportCubit(ReportRepository())),
+        BlocProvider<AssignmentReportCubit>(
+            create: (_) => AssignmentReportCubit(ReportRepository())),
+
+        BlocProvider<ExamTabSelectionCubit>(
+            create: (_) => ExamTabSelectionCubit()),
+        BlocProvider<ExamOnlineCubit>(
+            create: (_) => ExamOnlineCubit(ExamOnlineRepository())),
+        BlocProvider<ExamsOnlineCubit>(
+            create: (_) => ExamsOnlineCubit(ExamOnlineRepository())),
+
+        BlocProvider<ResultsOnlineCubit>(
+            create: (_) => ResultsOnlineCubit(ResultOnlineRepository())),
       ],
       child: Builder(builder: (context) {
         final currentLanguage =

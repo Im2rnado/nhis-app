@@ -20,6 +20,8 @@ class AppConfiguration {
   late final String schoolName;
   late final String schoolTagline;
   late final FeesSettings feesSettings;
+  late final String onlineExamRules;
+  late final String isOnlineFeesPaymentEnabled;
 
   AppConfiguration.fromJson(Map<String, dynamic> json) {
     appLink = json['app_link'] ?? "";
@@ -32,5 +34,7 @@ class AppConfiguration {
     schoolTagline = json['school_tagline'] ?? "";
     academicYear = AcademicYear.fromJson(json['session_year'] ?? {});
     feesSettings = FeesSettings.fromJson(json['fees_settings'] ?? {});
+    onlineExamRules = json['online_exam_terms_condition'];
+    isOnlineFeesPaymentEnabled = json['online_payment'];
   }
 }

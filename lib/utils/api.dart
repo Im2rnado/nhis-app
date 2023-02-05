@@ -21,7 +21,6 @@ class ApiException implements Exception {
 class Api {
   static Map<String, dynamic> headers() {
     final String jwtToken = Hive.box(authBoxKey).get(jwtTokenKey) ?? "";
-
     return {"Authorization": "Bearer $jwtToken"};
   }
 
@@ -51,6 +50,24 @@ class Api {
 
   static String studentResults = "${databaseUrl}student/exam-marks";
   static String requestResetPassword = "${databaseUrl}student/forgot-password";
+
+  static String studentExamOnlineList =
+      "${databaseUrl}student/get-online-exam-list";
+  static String studentExamOnlineQuestions =
+      "${databaseUrl}student/get-online-exam-questions";
+  static String studentSubmitOnlineExamAnswers =
+      "${databaseUrl}student/submit-online-exam-answers";
+
+  static String studentOnlineExamResultList =
+      "${databaseUrl}student/get-online-exam-result-list";
+
+  static String studentOnlineExamResult =
+      "${databaseUrl}student/get-online-exam-result";
+
+  static String studentOnlineExamReport =
+      "${databaseUrl}student/get-online-exam-report";
+  static String studentAssignmentReport =
+      "${databaseUrl}student/get-assignments-report";
 
   //
   //Apis that will be use in both student and parent app
@@ -93,6 +110,17 @@ class Api {
   static String getPaidFeesListParent = "${databaseUrl}parent/fees-paid-list";
   static String sendFeesPaidReceiptParent =
       "${databaseUrl}parent/fees-paid-receipt-pdf";
+
+  static String parentExamOnlineList =
+      "${databaseUrl}parent/get-online-exam-list";
+  static String parentOnlineExamResultList =
+      "${databaseUrl}parent/get-online-exam-result-list";
+  static String parentOnlineExamResult =
+      "${databaseUrl}parent/get-online-exam-result";
+  static String parentOnlineExamReport =
+      "${databaseUrl}parent/get-online-exam-report";
+  static String parentAssignmentReport =
+      "${databaseUrl}parent/get-assignments-report";
 
   static Future<Map<String, dynamic>> post({
     required Map<String, dynamic> body,

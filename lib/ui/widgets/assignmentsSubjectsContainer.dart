@@ -1,4 +1,6 @@
 import 'package:eschool/cubits/assignmentsCubit.dart';
+import 'package:eschool/cubits/examsOnlineCubit.dart';
+import 'package:eschool/cubits/resultsCubit.dart';
 import 'package:eschool/data/models/subject.dart';
 import 'package:eschool/utils/labelKeys.dart';
 import 'package:eschool/utils/uiUtils.dart';
@@ -10,12 +12,14 @@ class AssignmentsSubjectContainer extends StatefulWidget {
   final List<Subject> subjects;
   final Function(int) onTapSubject;
   final int selectedSubjectId;
+  final String cubitAndState;
 
   const AssignmentsSubjectContainer(
       {Key? key,
       required this.subjects,
       required this.onTapSubject,
-      required this.selectedSubjectId})
+      required this.selectedSubjectId,
+      required this.cubitAndState})
       : super(key: key);
 
   @override
@@ -42,10 +46,24 @@ class _AssignmentsSubjectContainerState
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              if (context.read<AssignmentsCubit>().state
-                  is AssignmentsFetchInProgress) {
-                return;
+              if (widget.cubitAndState == "onlineExam") {
+                if (context.read<ExamsOnlineCubit>().state
+                    is ExamsOnlineFetchInProgress) {
+                  return;
+                }
+              } else if (widget.cubitAndState == "onlineResult") {
+                //change cubit later - according to Online Result
+                if (context.read<ResultsCubit>().state
+                    is ResultsFetchInProgress) {
+                  return;
+                }
+              } else {
+                if (context.read<AssignmentsCubit>().state
+                    is AssignmentsFetchInProgress) {
+                  return;
+                }
               }
+
               if (widget.subjects[index].id == widget.selectedSubjectId) {
                 return;
               }

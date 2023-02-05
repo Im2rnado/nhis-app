@@ -117,6 +117,7 @@ class _AssignmentsContainerState extends State<AssignmentsContainer> {
             bloc: context.read<AssignmentsTabSelectionCubit>(),
             builder: (context, state) {
               return AssignmentsSubjectContainer(
+                  cubitAndState: "assignment",
                   subjects: subjects,
                   onTapSubject: (int subjectId) {
                     context
@@ -124,7 +125,6 @@ class _AssignmentsContainerState extends State<AssignmentsContainer> {
                         .changeAssignmentFilterBySubjectId(
                           subjectId,
                         );
-
                     fetchAssignments();
                   },
                   selectedSubjectId: state.assignmentFilterBySubjectId);
@@ -178,7 +178,7 @@ class _AssignmentsContainerState extends State<AssignmentsContainer> {
                       ? AlignmentDirectional.centerStart
                       : AlignmentDirectional.centerEnd,
                   child:
-                      TabBatBackgroundContainer(boxConstraints: boxConstraints),
+                      TabBarBackgroundContainer(boxConstraints: boxConstraints),
                 );
               },
             ),

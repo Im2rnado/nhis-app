@@ -1,6 +1,6 @@
 import 'package:eschool/app/routes.dart';
 import 'package:eschool/cubits/authCubit.dart';
-import 'package:eschool/cubits/examCubit.dart';
+import 'package:eschool/cubits/examDetailsCubit.dart';
 import 'package:eschool/data/models/exam.dart';
 import 'package:eschool/ui/widgets/customRefreshIndicator.dart';
 import 'package:eschool/ui/widgets/customShimmerContainer.dart';
@@ -15,16 +15,17 @@ import 'package:eschool/utils/uiUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ExamListContainer extends StatefulWidget {
+class ExamOfflineListContainer extends StatefulWidget {
   final int? childId;
 
-  ExamListContainer({Key? key, this.childId}) : super(key: key);
+  ExamOfflineListContainer({Key? key, this.childId}) : super(key: key);
 
   @override
-  State<ExamListContainer> createState() => _ExamListContainerState();
+  State<ExamOfflineListContainer> createState() =>
+      _ExamOfflineListContainerState();
 }
 
-class _ExamListContainerState extends State<ExamListContainer> {
+class _ExamOfflineListContainerState extends State<ExamOfflineListContainer> {
   String _currentlySelectedExamFilter = allExamsKey;
 
   @override
@@ -67,7 +68,7 @@ class _ExamListContainerState extends State<ExamListContainer> {
                             errorMessage: UiUtils.getTranslatedLabel(
                                 context, noExamTimeTableFoundKey),
                             backgroundColor:
-                                Theme.of(context).colorScheme.error);
+                                UiUtils.getColorScheme(context).error);
                         return;
                       }
                       Navigator.of(context)
@@ -93,6 +94,9 @@ class _ExamListContainerState extends State<ExamListContainer> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height * (0.035),
+              ),
               ShimmerLoadingContainer(
                   child: CustomShimmerContainer(
                 height: 9,
@@ -142,7 +146,7 @@ class _ExamListContainerState extends State<ExamListContainer> {
             bottom: UiUtils.getScrollViewBottomPadding(context),
             top: UiUtils.getScrollViewTopPadding(
                 context: context,
-                appBarHeightPercentage: UiUtils.appBarSmallerHeightPercentage)),
+                appBarHeightPercentage: UiUtils.appBarBiggerHeightPercentage)),
         child: Column(
           children: [
             //Filter
@@ -163,9 +167,7 @@ class _ExamListContainerState extends State<ExamListContainer> {
               selectedExamFilterIndex:
                   examFilters.indexOf(_currentlySelectedExamFilter),
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * (0.035),
-            ),
+
             BlocBuilder<ExamDetailsCubit, ExamDetailsState>(
               builder: (context, state) {
                 if (state is ExamDetailsFetchSuccess) {
@@ -173,7 +175,15 @@ class _ExamListContainerState extends State<ExamListContainer> {
                       alignment: Alignment.topCenter,
                       child: state.examList.isEmpty
                           ? NoDataContainer(titleKey: noExamsFoundKey)
-                          : _buildExamList(state.examList));
+                          : Column(
+                              children: [
+                                SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      (0.035),
+                                ),
+                                _buildExamList(state.examList),
+                              ],
+                            ));
                 }
                 if (state is ExamDetailsFetchFailure) {
                   return ErrorContainer(

@@ -9,6 +9,7 @@ const String noticeBoardKey = "noticeBoard";
 const String parentProfileKey = "parentProfile";
 const String resultsKey = "results";
 const String settingsKey = "settings";
+const String reportsKey = "reports";
 const String examsKey = "exams";
 const String profileKey = "profile";
 const String personalDetailsKey = "personalDetails";
@@ -35,6 +36,7 @@ const String amountKey = "amount";
 const String pendingKey = "pending";
 const String paidKey = "paid";
 const String receiptKey = "receipt";
+const String offlinePaymentMsgKey = "offlinePaymentMsg";
 
 const String payNowKey = "payNow";
 
@@ -89,6 +91,7 @@ const String resultKey = "result";
 const String subKey = "sub";
 const String marksKey = "marks";
 const String totalKey = "total";
+const String totalMarksKey = "totalMarks";
 const String gradeKey = "grade";
 const String dateKey = "date";
 const String obtainedMarksKey = "obtainedMarks";
@@ -222,16 +225,54 @@ const String newUpdateAvailableKey = "newUpdateAvailable";
 
 const String featureDisableInDemoVersionKey = "featureDisableInDemoVersion";
 
+const String onlineKey = "online";
+const String offlineKey = "offline";
+
+const String onlineExamKey = "onlineExam";
+
 const String allExamsKey = "allExams";
 const String upComingKey = "upComing";
 const String onGoingKey = "onGoing";
 const String completedKey = "completed";
+
+const String attemptedKey = "attempted";
+const String missedKey = "missed";
 
 const String examNameKey = "examName";
 const String examTimeTableKey = "examTimeTable";
 const String noExamsFoundKey = "noExamsFound";
 const String noResultPublishedKey = "noResultPublished";
 const String noExamTimeTableFoundKey = "noExamTimeTableFound";
+
+const String noExamTodayKey = "noExamToday";
+
+const String noExamNowKey = "noExamNow";
+
+const String quitExamKey = "quitExam";
+
+const String todayKey = "today";
+const String tomorrowKey = "tomorrow";
+const String onKey = "on";
+
+const String iAgreeWithExamRulesKey = "iAgreeWithExamRules";
+const String pleaseAcceptExamRulesKey = "pleaseAcceptExamRules";
+const String examRulesKey = "examRules";
+const String viewAllRulesKey = "viewAllRules";
+const String enterValidExamKey = "enterValidExamKey";
+const String enterExamKey = "enterExamKey";
+const String examResultKey = "examResult";
+const String totalQuestionsKey = "totalQuestions";
+const String examCompletedKey = "examCompleted";
+const String examMultipleAnsKey = "examMultipleAns";
+const String noteKey = "note";
+const String examMultipleAnsNoteKey = "examMultipleAnsNote";
+
+const String questionsKey = "questions";
+const String answeredKey = "answered";
+const String unAnsweredKey = "unAnswered";
+
+const String correctAnswersKey = "correctAnswers";
+const String incorrectAnswersKey = "incorrectAnswers";
 
 const String paymentSuccessTitleKey = "paymentSuccessTitle";
 const String paymentFailureTitleKey = "paymentFailureTitle";
@@ -240,3 +281,7 @@ const String paymentPendingTitleKey = "paymentPendingTitle";
 const String paymentSuccessMsgKey = "paymentSuccessMsg";
 const String paymentFailureMsgKey = "paymentFailureMsg";
 const String paymentPendingMsgKey = "paymentPendingMsg";
+
+const String obtainedKey = "obtained";
+
+const String reportNoteKey = "reportNote";

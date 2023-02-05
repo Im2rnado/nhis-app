@@ -12,6 +12,7 @@ import 'package:eschool/ui/screens/childTeachers.dart';
 import 'package:eschool/ui/screens/childTimeTableScreen.dart';
 import 'package:eschool/ui/screens/contactUsScreen.dart';
 import 'package:eschool/ui/screens/exam/examTimeTableScreen.dart';
+import 'package:eschool/ui/screens/exam/onlineExam/examOnlineScreen.dart';
 import 'package:eschool/ui/screens/examScreen.dart';
 import 'package:eschool/ui/screens/faqsScreen.dart';
 import 'package:eschool/ui/screens/fees/feesDetailsScreen.dart';
@@ -23,6 +24,9 @@ import 'package:eschool/ui/screens/noticeBoardScreen.dart';
 import 'package:eschool/ui/screens/parentHomeScreen.dart';
 import 'package:eschool/ui/screens/parentProfileScreen.dart';
 import 'package:eschool/ui/screens/playVideo/playVideoScreen.dart';
+import 'package:eschool/ui/screens/reports/reportSubjectsContainer.dart';
+import 'package:eschool/ui/screens/reports/subjectWiseDetailedReport.dart';
+import 'package:eschool/ui/screens/resultOnline/resultOnlineScreen.dart';
 import 'package:eschool/ui/screens/studentProfileScreen.dart';
 import 'package:eschool/ui/screens/resultScreen.dart';
 import 'package:eschool/ui/screens/selectSubjectsScreen.dart';
@@ -97,6 +101,13 @@ class Routes {
   static const String feesDetails = "/feesDetails";
 
   static const String paymentVerify = "/paymentVerify";
+
+  static const String subjectWiseReport = "/reportSubjectsContainer";
+  static const String subjectWiseDetailedReport = "/subjectWiseDetailedReport";
+
+  static const String examOnline = "/examOnline";
+
+  static const String resultOnline = "/resultOnline";
 
   static String currentRoute = splash;
 
@@ -247,6 +258,20 @@ class Routes {
 
       case paymentVerify:
         return FeesPaymentVerification.route(routeSettings);
+
+      case subjectWiseReport:
+        return ReportSubjectsContainer.route(routeSettings);
+
+      case subjectWiseDetailedReport:
+        return SubjectWiseDetailedReport.route(routeSettings);
+
+      case examOnline:
+        return ExamOnlineScreen.route(routeSettings);
+
+      case resultOnline:
+        {
+          return ResultOnlineScreen.route(routeSettings);
+        }
 
       case parentMenu:
         {

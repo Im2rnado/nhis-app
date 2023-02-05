@@ -110,7 +110,7 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
               alignment: _selectedTabTitle == chaptersKey
                   ? AlignmentDirectional.centerStart
                   : AlignmentDirectional.centerEnd,
-              child: TabBatBackgroundContainer(boxConstraints: boxConstraints),
+              child: TabBarBackgroundContainer(boxConstraints: boxConstraints),
             ),
             CustomTabBarContainer(
                 boxConstraints: boxConstraints,

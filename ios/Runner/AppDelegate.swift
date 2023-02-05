@@ -1,7 +1,6 @@
 import UIKit
 import Flutter
 import FirebaseCore
-//import awesome_notifications
 import FirebaseMessaging
 
 @UIApplicationMain
@@ -11,6 +10,8 @@ import FirebaseMessaging
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
 
+    self.window.makeSecure()
+
       GeneratedPluginRegistrant.register(with: self)
     if FirebaseApp.app() == nil {
         FirebaseApp.configure()
@@ -18,6 +19,7 @@ import FirebaseMessaging
      if #available(iOS 10.0, *) {
          UNUserNotificationCenter.current().delegate = self
      }
+
     // This function registers the desired plugins to be used within a notification background action
 //      SwiftAwesomeNotificationsPlugin.setPluginRegistrantCallback { registry in
 //          SwiftAwesomeNotificationsPlugin.register(
@@ -44,8 +46,27 @@ import FirebaseMessaging
      }
 
     
+  override func applicationWillResignActive(
+    _ application: UIApplication
+  ) {
+    self.window.isHidden = true;
+  }
+  override func applicationDidBecomeActive(
+    _ application: UIApplication
+  ) {
+    self.window.isHidden = false;
+  }
+}
 
-    
-
-
+//to prevent Screenshot & ScreenRecording
+extension UIWindow {
+ func makeSecure() {
+  let field = UITextField()
+  field.isSecureTextEntry = true
+  self.addSubview(field)
+  field.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+  field.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+  self.layer.superlayer?.addSublayer(field.layer)
+  field.layer.sublayers?.first?.addSublayer(self.layer)
+}
 }

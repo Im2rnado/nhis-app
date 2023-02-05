@@ -46,6 +46,7 @@ class AppConfigurationCubit extends Cubit<AppConfigurationState> {
     try {
       final appConfiguration = AppConfiguration.fromJson(
           await _systemRepository.fetchSettings(type: "app_settings") ?? {});
+      print("app config - $appConfiguration");
       emit(AppConfigurationFetchSuccess(appConfiguration: appConfiguration));
     } catch (e) {
       emit(AppConfigurationFetchFailure(e.toString()));
@@ -96,5 +97,21 @@ class AppConfigurationCubit extends Cubit<AppConfigurationState> {
       return getAppConfiguration().feesSettings;
     }
     return FeesSettings.fromJson(Map.from({}));
+  }
+
+  bool getOnlineFeesPaymentStatus() {
+    if (state is AppConfigurationFetchSuccess) {
+      bool isEnabled = getAppConfiguration().isOnlineFeesPaymentEnabled == "1";
+      return isEnabled;
+    }
+    return false;
+    // isOnlineFeesPaymentEnabled
+  }
+
+  String fetchExamRules() {
+    if (state is AppConfigurationFetchSuccess) {
+      return getAppConfiguration().onlineExamRules;
+    }
+    return '';
   }
 }

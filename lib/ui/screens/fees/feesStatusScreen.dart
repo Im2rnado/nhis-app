@@ -86,9 +86,21 @@ class _FeesStatusScreenState extends State<FeesStatusScreen> {
             .name,
         fees: [],
         onItemTap: () {
-          Navigator.of(context).pushNamed(Routes.feesDetails, arguments: {
-            "studentDetails": widget.studentDetails,
-          });
+          if (context
+              .read<AppConfigurationCubit>()
+              .getOnlineFeesPaymentStatus()) {
+            Navigator.of(context).pushNamed(Routes.feesDetails, arguments: {
+              "studentDetails": widget.studentDetails,
+            });
+          } else {
+            //show snackbar
+            UiUtils.showCustomSnackBar(
+                context: context,
+                errorMessage:
+                    UiUtils.getTranslatedLabel(context, offlinePaymentMsgKey),
+                delayDuration: Duration(milliseconds: 4500),
+                backgroundColor: UiUtils.getColorScheme(context).primary);
+          }
         });
   }
 
@@ -123,19 +135,23 @@ class _FeesStatusScreenState extends State<FeesStatusScreen> {
                     return BlocConsumer<FeesReceiptCubit, FeesReceiptState>(
                         listener: (context, state) {
                       if (state is FeesReceiptSendSuccess) {
-                        String msg =
-                            "${state.successMessage}\n${widget.studentDetails.getFullName()},$classKey ${feesList[index].stClass.name}-${feesList[index].academicYear.name}";
-                        UiUtils.showCustomSnackBar(
-                            context: context,
-                            errorMessage: msg,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary);
-
+                        int currentIndex = feesList.indexWhere(
+                            (element) => element.isProcessing == true);
+                        if (index == currentIndex) {
+                          String msg =
+                              "${state.successMessage}\n${widget.studentDetails.getFullName()},$classKey ${feesList[currentIndex].stClass.name}-${feesList[currentIndex].academicYear.name}";
+                          UiUtils.showCustomSnackBar(
+                              context: context,
+                              errorMessage: msg,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary);
+                        }
                         feesList
                                 .firstWhere((element) =>
                                     element.id == feesList[index].id)
                                 .isProcessing =
                             false; //update value of isProcessing in model
+
                       }
                       if (state is FeesReceiptSendFailure) {
                         UiUtils.showCustomSnackBar(

@@ -170,4 +170,14 @@ class AssignmentsCubit extends Cubit<AssignmentsState> {
       }
     }
   }
+
+  /* Assignment? getSubmittedAssignmentFromReport(int assignmentId) {
+    if (state is AssignmentsFetchSuccess) {
+      return (state as AssignmentsFetchSuccess).assignments.firstWhere(
+          (element) =>
+              element.assignmentSubmission.id != 0 &&
+              element.id == assignmentId);
+    }
+    return null;
+  } */
 }

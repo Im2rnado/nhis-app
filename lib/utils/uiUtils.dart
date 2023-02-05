@@ -1,17 +1,23 @@
+import 'package:flutter/material.dart';
 import 'package:eschool/app/appLocalization.dart';
+
+import 'package:open_filex/open_filex.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool/cubits/appConfigurationCubit.dart';
 import 'package:eschool/cubits/downloadFileCubit.dart';
+
 import 'package:eschool/data/models/studyMaterial.dart';
 import 'package:eschool/data/repositories/subjectRepository.dart';
+
 import 'package:eschool/ui/widgets/downloadFileBottomsheetContainer.dart';
 import 'package:eschool/ui/widgets/errorMessageOverlayContainer.dart';
+
 import 'package:eschool/utils/constants.dart';
 import 'package:eschool/utils/errorMessageKeysAndCodes.dart';
 import 'package:eschool/utils/labelKeys.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:open_filex/open_filex.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 class UiUtils {
   //This extra padding will add to MediaQuery.of(context).padding.top in orderto give same top padding in every screen
@@ -36,6 +42,8 @@ class UiUtils {
   static double subjectFirstLetterFontSize = 20;
 
   static double defaultProfilePictureHeightAndWidthPercentage = 0.175;
+
+  static double questionContainerHeightPercentage = 0.725;
 
   static Duration tabBackgroundContainerAnimationDuration =
       Duration(milliseconds: 300);
@@ -198,7 +206,8 @@ class UiUtils {
   static Future<void> showCustomSnackBar(
       {required BuildContext context,
       required String errorMessage,
-      required Color backgroundColor}) async {
+      required Color backgroundColor,
+      Duration delayDuration = errorMessageDisplayDuration}) async {
     OverlayState? overlayState = Overlay.of(context);
     OverlayEntry overlayEntry = OverlayEntry(
       builder: (context) => ErrorMessageOverlayContainer(
@@ -208,7 +217,7 @@ class UiUtils {
     );
 
     overlayState?.insert(overlayEntry);
-    await Future.delayed(errorMessageDisplayDuration);
+    await Future.delayed(delayDuration);
     overlayEntry.remove();
   }
 
@@ -287,6 +296,38 @@ class UiUtils {
 
   static String formatDate(DateTime dateTime) {
     return "${dateTime.day.toString().padLeft(2, '0')}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.year}";
+  }
+
+  static String dateConverter(
+      DateTime myEndDate, BuildContext contxt, bool fromResult) {
+    String date;
+    //format date & time
+    final onlyDate = myEndDate.toString().split(" ");
+    DateTime dt = intl.DateFormat("yyyy-MM-dd", "en_US").parse(onlyDate[0]);
+    final formattedDate = new intl.DateFormat('dd MMM, yyyy');
+    final onlyTime = onlyDate[1];
+    final formattedTime = UiUtils.formatTime(onlyTime);
+    //check for today or tomorrow or specific date
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+    final checkEndDate =
+        DateTime(myEndDate.year, myEndDate.month, myEndDate.day);
+
+    if (checkEndDate == today) {
+      date = (fromResult)
+          ? "${UiUtils.getTranslatedLabel(contxt, submittedKey)} : $todayKey"
+          : "$todayKey, $formattedTime";
+    } else if (checkEndDate == tomorrow) {
+      date = (fromResult)
+          ? "${UiUtils.getTranslatedLabel(contxt, submittedKey)} : $tomorrowKey"
+          : "$tomorrowKey, $formattedTime";
+    } else {
+      date = (fromResult)
+          ? '${UiUtils.getTranslatedLabel(contxt, submittedKey)} : ${formattedDate.format(dt)}'
+          : '${formattedDate.format(dt)} $formattedTime';
+    }
+    return date;
   }
 
   //It will return - if given value is empty
@@ -368,4 +409,9 @@ class UiUtils {
       {required String strVal, required BuildContext context}) {
     return "$strVal ${context.read<AppConfigurationCubit>().getFeesSettings().currencySymbol}";
   }
+}
+
+extension emptyPadding on num {
+  SizedBox get sizedBoxHeight => SizedBox(height: toDouble());
+  SizedBox get sizedBoxWidth => SizedBox(width: toDouble());
 }

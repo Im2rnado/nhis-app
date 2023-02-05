@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class TabBatBackgroundContainer extends StatelessWidget {
+class TabBarBackgroundContainer extends StatelessWidget {
   final BoxConstraints boxConstraints;
-  const TabBatBackgroundContainer({Key? key, required this.boxConstraints})
+  const TabBarBackgroundContainer({Key? key, required this.boxConstraints})
       : super(key: key);
 
   @override

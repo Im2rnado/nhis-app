@@ -1,25 +1,39 @@
-import 'package:eschool/app/routes.dart';
-import 'package:eschool/cubits/authCubit.dart';
-import 'package:eschool/cubits/resultsCubit.dart';
-import 'package:eschool/data/models/result.dart';
-import 'package:eschool/ui/widgets/customBackButton.dart';
-import 'package:eschool/ui/widgets/customRefreshIndicator.dart';
-import 'package:eschool/ui/widgets/customShimmerContainer.dart';
-import 'package:eschool/ui/widgets/errorContainer.dart';
-import 'package:eschool/ui/widgets/listItemForExamAndResult.dart';
-import 'package:eschool/ui/widgets/noDataContainer.dart';
-import 'package:eschool/ui/widgets/screenTopBackgroundContainer.dart';
-import 'package:eschool/ui/widgets/shimmerLoadingContainer.dart';
-import 'package:eschool/utils/labelKeys.dart';
-import 'package:eschool/utils/uiUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:eschool/app/routes.dart';
+import 'package:eschool/cubits/authCubit.dart';
+import 'package:eschool/cubits/resultTabSelectionCubit.dart';
+import 'package:eschool/cubits/resultsCubit.dart';
+import 'package:eschool/cubits/resultsOnlineCubit.dart';
+import 'package:eschool/cubits/studentSubjectAndSlidersCubit.dart';
+
+import 'package:eschool/data/models/result.dart';
+import 'package:eschool/data/models/resultOnline.dart';
+import 'package:eschool/data/models/subject.dart';
+
+import 'package:eschool/ui/widgets/assignmentsSubjectsContainer.dart';
+import 'package:eschool/ui/widgets/customBackButton.dart';
+import 'package:eschool/ui/widgets/customRefreshIndicator.dart';
+import 'package:eschool/ui/widgets/customShimmerContainer.dart';
+import 'package:eschool/ui/widgets/customTabBarContainer.dart';
+import 'package:eschool/ui/widgets/errorContainer.dart';
+import 'package:eschool/ui/widgets/listItemForExamAndResult.dart';
+import 'package:eschool/ui/widgets/listItemForOnlineExamAndOnlineResult.dart';
+import 'package:eschool/ui/widgets/noDataContainer.dart';
+import 'package:eschool/ui/widgets/screenTopBackgroundContainer.dart';
+import 'package:eschool/ui/widgets/shimmerLoadingContainer.dart';
+import 'package:eschool/ui/widgets/tabBarBackgroundContainer.dart';
+
+import 'package:eschool/utils/labelKeys.dart';
+import 'package:eschool/utils/uiUtils.dart';
+
 class ResultsContainer extends StatefulWidget {
   final int? childId;
+  final List<Subject>? subjects;
 
-  ResultsContainer({Key? key, this.childId}) : super(key: key);
+  ResultsContainer({Key? key, this.childId, this.subjects}) : super(key: key);
 
   @override
   State<ResultsContainer> createState() => _ResultsContainerState();
@@ -28,11 +42,13 @@ class ResultsContainer extends StatefulWidget {
 class _ResultsContainerState extends State<ResultsContainer> {
   late ScrollController _scrollController = ScrollController()
     ..addListener(_resultsScrollListener);
+  //same for both Online and Offline Result
 
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
       fetchResults();
+      fetchOnlineResults();
     });
     super.initState();
   }
@@ -46,10 +62,22 @@ class _ResultsContainerState extends State<ResultsContainer> {
   void _resultsScrollListener() {
     if (_scrollController.offset ==
         _scrollController.position.maxScrollExtent) {
-      if (context.read<ResultsCubit>().hasMore()) {
-        context.read<ResultsCubit>().fetchMoreResults(
-            useParentApi: context.read<AuthCubit>().isParent(),
-            childId: widget.childId);
+      if (context.read<ResultTabSelectionCubit>().isResultOnline()) {
+        if (context.read<ResultsOnlineCubit>().hasMore()) {
+          context.read<ResultsOnlineCubit>().fetchMoreResultsOnline(
+              useParentApi: context.read<AuthCubit>().isParent(),
+              childId: widget.childId ?? 0,
+              subjectId: context
+                  .read<ResultTabSelectionCubit>()
+                  .state
+                  .resultFilterBySubjectId);
+        }
+      } else {
+        if (context.read<ResultsCubit>().hasMore()) {
+          context.read<ResultsCubit>().fetchMoreResults(
+              useParentApi: context.read<AuthCubit>().isParent(),
+              childId: widget.childId);
+        }
       }
     }
   }
@@ -61,28 +89,56 @@ class _ResultsContainerState extends State<ResultsContainer> {
     super.dispose();
   }
 
-  Widget _buildAppBar() {
+  Widget _buildAppBar(ResultTabSelectionState currentState) {
     return ScreenTopBackgroundContainer(
-      padding: EdgeInsets.all(0),
-      child: Stack(
-        children: [
-          context.read<AuthCubit>().isParent()
-              ? CustomBackButton(
-                  alignmentDirectional: AlignmentDirectional.centerStart,
-                )
-              : SizedBox(),
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              UiUtils.getTranslatedLabel(context, resultsKey),
-              style: TextStyle(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  fontSize: UiUtils.screenTitleFontSize),
+      child: LayoutBuilder(builder: (context, boxConstraints) {
+        return Stack(
+          children: [
+            context.read<AuthCubit>().isParent()
+                ? CustomBackButton()
+                : SizedBox.shrink(),
+            Align(
+              alignment: Alignment.topCenter,
+              child: Text(
+                UiUtils.getTranslatedLabel(context, resultsKey),
+                style: TextStyle(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    fontSize: UiUtils.screenTitleFontSize),
+              ),
             ),
-          ),
-        ],
-      ),
-      heightPercentage: UiUtils.appBarSmallerHeightPercentage,
+            AnimatedAlign(
+              curve: UiUtils.tabBackgroundContainerAnimationCurve,
+              duration: UiUtils.tabBackgroundContainerAnimationDuration,
+              alignment: currentState.resultFilterTabTitle == offlineKey
+                  ? AlignmentDirectional.centerStart
+                  : AlignmentDirectional.centerEnd,
+              child: TabBarBackgroundContainer(boxConstraints: boxConstraints),
+            ),
+            CustomTabBarContainer(
+              boxConstraints: boxConstraints,
+              alignment: AlignmentDirectional.centerStart,
+              isSelected: currentState.resultFilterTabTitle == offlineKey,
+              onTap: () {
+                context
+                    .read<ResultTabSelectionCubit>()
+                    .changeResultFilterTabTitle(offlineKey);
+              },
+              titleKey: offlineKey,
+            ),
+            CustomTabBarContainer(
+              boxConstraints: boxConstraints,
+              alignment: AlignmentDirectional.centerEnd,
+              isSelected: currentState.resultFilterTabTitle == onlineKey,
+              onTap: () {
+                context
+                    .read<ResultTabSelectionCubit>()
+                    .changeResultFilterTabTitle(onlineKey);
+              },
+              titleKey: onlineKey,
+            ),
+          ],
+        );
+      }),
     );
   }
 
@@ -150,7 +206,7 @@ class _ResultsContainerState extends State<ResultsContainer> {
         });
   }
 
-  Widget _buildResults() {
+  Widget buildOfflineResults() {
     return Align(
       alignment: Alignment.topCenter,
       child: CustomRefreshIndicator(
@@ -161,27 +217,31 @@ class _ResultsContainerState extends State<ResultsContainer> {
         },
         displacment: UiUtils.getScrollViewTopPadding(
             context: context,
-            appBarHeightPercentage: UiUtils.appBarSmallerHeightPercentage),
+            appBarHeightPercentage: UiUtils.appBarBiggerHeightPercentage),
         child: SingleChildScrollView(
           controller: _scrollController,
           child: BlocBuilder<ResultsCubit, ResultsState>(
             builder: (context, state) {
               if (state is ResultsFetchSuccess) {
-
-                return state.results.isNotEmpty ? Column(
-                  children:
-                      List.generate(state.results.length, (index) => index)
-                          .map((index) {
-                    return _buildResultDetailsContainer(
-                        result: state.results[index],
-                        index: index,
-                        totalResults: state.results.length,
-                        hasMoreResults: context.read<ResultsCubit>().hasMore(),
-                        hasMoreResultsInProgress:
-                            state.fetchMoreResultsInProgress,
-                        fetchMoreResultsFailure: state.moreResultsFetchError);
-                  }).toList(),
-                ) : Center(child: NoDataContainer(titleKey: noResultPublishedKey));
+                return state.results.isNotEmpty
+                    ? Column(
+                        children: List.generate(
+                                state.results.length, (index) => index)
+                            .map((index) {
+                          return _buildResultDetailsContainer(
+                              result: state.results[index],
+                              index: index,
+                              totalResults: state.results.length,
+                              hasMoreResults:
+                                  context.read<ResultsCubit>().hasMore(),
+                              hasMoreResultsInProgress:
+                                  state.fetchMoreResultsInProgress,
+                              fetchMoreResultsFailure:
+                                  state.moreResultsFetchError);
+                        }).toList(),
+                      )
+                    : Center(
+                        child: NoDataContainer(titleKey: noResultPublishedKey));
               }
               if (state is ResultsFetchFailure) {
                 return ErrorContainer(
@@ -203,7 +263,178 @@ class _ResultsContainerState extends State<ResultsContainer> {
               top: UiUtils.getScrollViewTopPadding(
                   context: context,
                   appBarHeightPercentage:
-                      UiUtils.appBarSmallerHeightPercentage)),
+                      UiUtils.appBarBiggerHeightPercentage)),
+        ),
+      ),
+    );
+  }
+
+  //Online Result
+  Widget buildMySubjectsListContainer() {
+    return BlocBuilder<StudentSubjectsAndSlidersCubit,
+        StudentSubjectsAndSlidersState>(
+      builder: (context, state) {
+        return BlocBuilder<ResultTabSelectionCubit, ResultTabSelectionState>(
+            bloc: context.read<ResultTabSelectionCubit>(),
+            builder: (context, state) {
+              return AssignmentsSubjectContainer(
+                cubitAndState: "onlineResult",
+                onTapSubject: (subjectId) {
+                  //fetch student online Result according to respected subjectId
+                  context
+                      .read<ResultTabSelectionCubit>()
+                      .changeResultFilterBySubjectId(
+                        subjectId,
+                      );
+                  fetchOnlineResults();
+                },
+                selectedSubjectId: state.resultFilterBySubjectId,
+                subjects: (widget.subjects != null)
+                    ? widget.subjects! //from parent
+                    : context
+                        .read<StudentSubjectsAndSlidersCubit>()
+                        .getSubjectsForAssignmentContainer(),
+              );
+            });
+      },
+    );
+  }
+
+  void fetchOnlineResults() {
+    context.read<ResultsOnlineCubit>().fetchResultsOnline(
+        useParentApi: context.read<AuthCubit>().isParent(),
+        childId: widget.childId ?? 0,
+        subjectId: context
+            .read<ResultTabSelectionCubit>()
+            .state
+            .resultFilterBySubjectId);
+  }
+
+  Widget _buildOnlineResultDetailsContainer(
+      {required ResultOnline result,
+      required int index,
+      required int totalResults,
+      required bool hasMoreResults,
+      required bool hasMoreResultsInProgress,
+      required bool fetchMoreResultsFailure}) {
+    if (index == (totalResults - 1)) {
+      if (hasMoreResults) {
+        if (hasMoreResultsInProgress) {
+          return _buildResultDetailsShimmerLoadingContainer(); //same for both Online and Offline Result
+        }
+        if (fetchMoreResultsFailure) {
+          return Center(
+            child: CupertinoButton(
+                child: Text(UiUtils.getTranslatedLabel(context, retryKey)),
+                onPressed: () {
+                  context.read<ResultsOnlineCubit>().fetchMoreResultsOnline(
+                      useParentApi: context.read<AuthCubit>().isParent(),
+                      childId: widget.childId ?? 0,
+                      subjectId: context
+                          .read<ResultTabSelectionCubit>()
+                          .state
+                          .resultFilterBySubjectId);
+                }),
+          );
+        }
+      }
+    }
+    return ListItemForOnlineExamAndOnlineResult(
+      examStartingDate: result.examDate,
+      examEndingDate: result.examDate,
+      examName: result.examName,
+      subjectName: result.subject.name,
+      totalMarks: result.totalMarks,
+      marks: result.obtainedMarks,
+      isSubjectSelected: (context
+                  .read<ResultTabSelectionCubit>()
+                  .state
+                  .resultFilterBySubjectId !=
+              0)
+          ? true
+          : false,
+      onItemTap: () {
+        Navigator.of(context).pushNamed(Routes.resultOnline, arguments: {
+          "examId": result.examId,
+          "examName": result.examName,
+          "subjectName": result.subject.name,
+          "childId": widget.childId,
+        });
+      },
+    );
+  }
+
+  Widget buildOnlineResults() {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: CustomRefreshIndicator(
+        onRefreshCallback: () {
+          if (context.read<ResultsOnlineCubit>().state
+              is ResultsOnlineFetchSuccess) {
+            fetchOnlineResults();
+          }
+        },
+        displacment: UiUtils.getScrollViewTopPadding(
+            context: context,
+            appBarHeightPercentage: UiUtils.appBarBiggerHeightPercentage),
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child: Column(
+            children: [
+              buildMySubjectsListContainer(),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * (0.035),
+              ),
+              BlocBuilder<ResultsOnlineCubit, ResultsOnlineState>(
+                builder: (context, state) {
+                  if (state is ResultsOnlineFetchSuccess) {
+                    return state.results.isNotEmpty
+                        ? Column(
+                            children: List.generate(
+                                    state.results.length, (index) => index)
+                                .map((index) {
+                              return _buildOnlineResultDetailsContainer(
+                                  result: state.results[index],
+                                  index: index,
+                                  totalResults: state.results.length,
+                                  hasMoreResults: context
+                                      .read<ResultsOnlineCubit>()
+                                      .hasMore(),
+                                  hasMoreResultsInProgress:
+                                      state.fetchMoreResultsOnlineInProgress,
+                                  fetchMoreResultsFailure:
+                                      state.moreResultsOnlineFetchError);
+                            }).toList(),
+                          )
+                        : Center(
+                            child: NoDataContainer(
+                                titleKey: noResultPublishedKey));
+                  }
+                  if (state is ResultsOnlineFetchFailure) {
+                    return ErrorContainer(
+                      errorMessageCode: state.errorMessage,
+                      onTapRetry: () {
+                        fetchOnlineResults();
+                      },
+                    );
+                  }
+                  return Column(
+                    children: List.generate(
+                        UiUtils.defaultShimmerLoadingContentCount,
+                        (index) =>
+                            _buildResultDetailsShimmerLoadingContainer()),
+                    //same for both Online and Offline Result
+                  );
+                },
+              ),
+            ],
+          ),
+          padding: EdgeInsets.only(
+              bottom: UiUtils.getScrollViewBottomPadding(context),
+              top: UiUtils.getScrollViewTopPadding(
+                  context: context,
+                  appBarHeightPercentage:
+                      UiUtils.appBarBiggerHeightPercentage)),
         ),
       ),
     );
@@ -211,14 +442,20 @@ class _ResultsContainerState extends State<ResultsContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        _buildResults(),
-        Align(
-          alignment: Alignment.topCenter,
-          child: _buildAppBar(),
-        ),
-      ],
+    return BlocBuilder<ResultTabSelectionCubit, ResultTabSelectionState>(
+      builder: (context, state) {
+        return Stack(
+          children: [
+            (context.read<ResultTabSelectionCubit>().isResultOnline())
+                ? buildOnlineResults()
+                : buildOfflineResults(),
+            Align(
+              alignment: Alignment.topCenter,
+              child: _buildAppBar(state),
+            ),
+          ],
+        );
+      },
     );
   }
 }

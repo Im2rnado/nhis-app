@@ -10,6 +10,7 @@ import 'package:eschool/data/repositories/studentRepository.dart';
 import 'package:eschool/data/repositories/systemInfoRepository.dart';
 import 'package:eschool/ui/screens/home/cubits/assignmentsTabSelectionCubit.dart';
 import 'package:eschool/ui/screens/home/widgets/examContainer.dart';
+import 'package:eschool/ui/screens/reports/reportSubjectsContainer.dart';
 import 'package:eschool/ui/widgets/appUnderMaintenanceContainer.dart';
 import 'package:eschool/ui/widgets/assignmentsContainer.dart';
 import 'package:eschool/ui/widgets/attendanceContainer.dart';
@@ -62,7 +63,7 @@ class HomeScreen extends StatefulWidget {
                   BlocProvider<AssignmentsTabSelectionCubit>(
                       create: (_) => AssignmentsTabSelectionCubit()),
                   BlocProvider<ResultsCubit>(
-                      create: (_) => ResultsCubit(StudentRepository()))
+                      create: (_) => ResultsCubit(StudentRepository())),
                 ],
                 child: ShowCaseWidget(
                   onFinish: () {},
@@ -103,7 +104,7 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late int _currentSelectedBottomNavIndex = 0;
   late int _previousSelectedBottmNavIndex = -1;
 
-  //index of opened homeBottomshet menu
+  //index of opened homeBottomsheet menu
   late int _currentlyOpenMenuIndex = -1;
 
   late bool _isMoreMenuOpen = false;
@@ -143,7 +144,7 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   void navigateToAssignmentContainer() {
     Navigator.of(context).popUntil((route) => route.isFirst);
-    _changeBottomNavItem(1);
+    changeBottomNavItem(1);
   }
 
   void initAnimations() {
@@ -171,7 +172,7 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void _changeBottomNavItem(int index) async {
+  void changeBottomNavItem(int index) async {
     if (_moreMenuBottomsheetAnimationController.isAnimating) {
       return;
     }
@@ -209,7 +210,7 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         //change bottom nav to previous selected index
         //only if there is not any opened menu item container
         if (_currentlyOpenMenuIndex == -1) {
-          _changeBottomNavItem(_previousSelectedBottmNavIndex);
+          changeBottomNavItem(_previousSelectedBottmNavIndex);
         }
       } else {
         //open menu
@@ -233,7 +234,7 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void _closeBottomMenu() async {
     if (_currentlyOpenMenuIndex == -1) {
       //close the menu and change bottom sheet
-      _changeBottomNavItem(_previousSelectedBottmNavIndex);
+      changeBottomNavItem(_previousSelectedBottmNavIndex);
     } else {
       await _moreMenuBottomsheetAnimationController.reverse();
       setState(() {
@@ -269,7 +270,7 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 return BottomNavItemContainer(
                     showCaseKey: _bottomNavItemShowCaseKey[index],
                     showCaseDescription: bottomNavItem.title,
-                    onTap: _changeBottomNavItem,
+                    onTap: changeBottomNavItem,
                     boxConstraints: boxConstraints,
                     currentIndex: _currentSelectedBottomNavIndex,
                     bottomNavItem: _bottomNavItems[index],
@@ -347,6 +348,10 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       return ResultsContainer();
     }
 
+    if (homeBottomSheetMenu[_currentlyOpenMenuIndex].title == reportsKey) {
+      return ReportSubjectsContainer();
+    }
+
     return SizedBox();
   }
 
@@ -359,7 +364,7 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           return Future.value(false);
         }
         if (_currentSelectedBottomNavIndex != 0) {
-          _changeBottomNavItem(0);
+          changeBottomNavItem(0);
           return Future.value(false);
         }
         return Future.value(true);

@@ -19,11 +19,12 @@ final List<Menu> homeBottomSheetMenu = [
   Menu(
       iconUrl: UiUtils.getImagePath("noticeboard_icon.svg"),
       title: noticeBoardKey),
+  Menu(iconUrl: UiUtils.getImagePath("exam_icon.svg"), title: examsKey),
+  Menu(iconUrl: UiUtils.getImagePath("result_icon.svg"), title: resultKey),
+  Menu(iconUrl: UiUtils.getImagePath("reports_icon.svg"), title: reportsKey),
   Menu(
       iconUrl: UiUtils.getImagePath("parent_icon.svg"),
       title: parentProfileKey),
   Menu(iconUrl: UiUtils.getImagePath("holiday_icon.svg"), title: holidaysKey),
-  Menu(iconUrl: UiUtils.getImagePath("exam_icon.svg"), title: examsKey),
-  Menu(iconUrl: UiUtils.getImagePath("result_icon.svg"), title: resultKey),
   Menu(iconUrl: UiUtils.getImagePath("setting_icon.svg"), title: settingsKey),
 ];

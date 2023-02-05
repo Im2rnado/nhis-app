@@ -8,11 +8,13 @@ class StudentSubjectsContainer extends StatelessWidget {
   final String subjectsTitleKey;
   final List<Subject> subjects;
   final int? childId;
+  final bool showReport;
   const StudentSubjectsContainer({
     Key? key,
     this.childId,
     required this.subjects,
     required this.subjectsTitleKey,
+    this.showReport = false,
   }) : super(key: key);
 
   Widget _buildSubjectContainer(
@@ -22,10 +24,17 @@ class StudentSubjectsContainer extends StatelessWidget {
       required BuildContext context}) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed(Routes.subjectDetails, arguments: {
-          "childId": childId,
-          "subject": subject,
-        });
+        (showReport)
+            ? Navigator.of(context)
+                .pushNamed(Routes.subjectWiseDetailedReport, arguments: {
+                "subject": subject,
+                "childId": childId ?? 0,
+              })
+            : Navigator.of(context)
+                .pushNamed(Routes.subjectDetails, arguments: {
+                "childId": childId,
+                "subject": subject,
+              });
       },
       child: Container(
         width: boxConstraints.maxWidth * (0.26),
@@ -43,9 +52,7 @@ class StudentSubjectsContainer extends StatelessWidget {
               radius: 20,
               subject: subject,
             ),
-            SizedBox(
-              height: 5,
-            ),
+            5.sizedBoxHeight,
             Text(
               subject.name,
               textAlign: TextAlign.center,

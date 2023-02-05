@@ -101,7 +101,7 @@ class _TopicDetailsScreenState extends State<TopicDetailsScreen> {
                     ? AlignmentDirectional.centerStart
                     : AlignmentDirectional.centerEnd,
                 child:
-                    TabBatBackgroundContainer(boxConstraints: boxConstraints),
+                    TabBarBackgroundContainer(boxConstraints: boxConstraints),
                 curve: UiUtils.tabBackgroundContainerAnimationCurve,
                 duration: UiUtils.tabBackgroundContainerAnimationDuration),
             CustomTabBarContainer(

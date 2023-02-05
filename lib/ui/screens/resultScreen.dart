@@ -208,14 +208,12 @@ class ResultScreen extends StatelessWidget {
             SizedBox(
               height: 10.0,
             ),
-            //
             ...result.subjectMarks
                 .map((subjectMark) => _buildResultValueContainer(
                     context: context,
                     boxConstraints: boxConstraints,
                     subjectMark: subjectMark))
                 .toList(),
-
             SizedBox(
               height: 10.0,
             ),
