@@ -145,7 +145,7 @@ class _ChildAssignmentsScreenState extends State<ChildAssignmentsScreen> {
               alignment: _assignmentStatusTabTitle == assignedKey
                   ? AlignmentDirectional.centerStart
                   : AlignmentDirectional.centerEnd,
-              child: TabBatBackgroundContainer(boxConstraints: boxConstraints),
+              child: TabBarBackgroundContainer(boxConstraints: boxConstraints),
             ),
             CustomTabBarContainer(
               boxConstraints: boxConstraints,
