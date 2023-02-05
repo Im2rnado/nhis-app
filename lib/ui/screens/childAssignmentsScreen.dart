@@ -196,11 +196,13 @@ class _ChildAssignmentsScreenState extends State<ChildAssignmentsScreen> {
           children: [
             //
             AssignmentsSubjectContainer(
+                cubitAndState: "assignment",
                 subjects: widget.subjects,
                 onTapSubject: (int subjectId) {
                   setState(() {
                     _currentlySelectedSubjectId = subjectId;
                   });
+
                   fetchAssignments();
                 },
                 selectedSubjectId: _currentlySelectedSubjectId),
