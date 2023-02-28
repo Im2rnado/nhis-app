@@ -237,7 +237,9 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
               route: Routes.childAssignments,
               arguments: {
                 "childId": widget.student.id,
-                "subjects": context.read<ChildSubjectsCubit>().getSubjectsForAssignmentContainer()
+                "subjects": context
+                    .read<ChildSubjectsCubit>()
+                    .getSubjectsForAssignmentContainer()
               },
               iconPath: UiUtils.getImagePath("assignment_icon_parent.svg"),
               title: UiUtils.getTranslatedLabel(context, assignmentsKey)),
@@ -358,35 +360,25 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Align(
-                alignment: Alignment.topCenter,
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(
-                    top: UiUtils.getScrollViewTopPadding(
-                        context: context,
-                        appBarHeightPercentage:
-                            UiUtils.appBarMediumtHeightPercentage),
+      body: Stack(children: [
+        Align(
+          alignment: Alignment.topCenter,
+          child: BlocBuilder(
+            builder: (context, state) {
+              return Column(
+                children: [
+                  _buildSubjectsAndInformationsContainer(),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * (0.025),
                   ),
-                  child: BlocBuilder(
-                    builder: (context, state) {
-                      return Column(
-                          children: [
-                          _buildSubjectsAndInformationsContainer(),
-                          SizedBox(
-                            height:
-                                MediaQuery.of(context).size.height * (0.025),
-                          ),
-                          _buildInformationAndMenu(),
-                          ],
-                        );
-                    },
-                  ),
-                ),
-              ),
-              _buildAppBar(),
-            ]),
+                  _buildInformationAndMenu(),
+                ],
+              );
+            },
+          ),
+        ),
+        _buildAppBar(),
+      ]),
     );
   }
 }
