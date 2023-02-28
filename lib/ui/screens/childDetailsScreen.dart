@@ -13,6 +13,7 @@ import 'package:eschool/utils/uiUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ChildDetailsScreen extends StatefulWidget {
   final Student student;
@@ -222,12 +223,145 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
     );
   }
 
+  Widget _buildInformationAndMenu() {
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(
+          left: MediaQuery.of(context).size.width * (0.075),
+          right: MediaQuery.of(context).size.width * (0.075),
+          top: UiUtils.getScrollViewTopPadding(
+              context: context,
+              appBarHeightPercentage: UiUtils.appBarMediumtHeightPercentage)),
+      child: Column(
+        children: [
+          _buildMenuContainer(
+              route: Routes.childAssignments,
+              arguments: {
+                "childId": widget.student.id,
+                "subjects": context.read<ChildSubjectsCubit>().getSubjectsForAssignmentContainer()
+              },
+              iconPath: UiUtils.getImagePath("assignment_icon_parent.svg"),
+              title: UiUtils.getTranslatedLabel(context, assignmentsKey)),
+          _buildMenuContainer(
+              route: Routes.childTeachers,
+              arguments: widget.student.id,
+              iconPath: UiUtils.getImagePath("teachers_icon.svg"),
+              title: UiUtils.getTranslatedLabel(context, teachersKey)),
+          _buildMenuContainer(
+              route: Routes.childAttendance,
+              arguments: widget.student.id,
+              iconPath: UiUtils.getImagePath("attendance_icon.svg"),
+              title: UiUtils.getTranslatedLabel(context, attendanceKey)),
+          _buildMenuContainer(
+              route: Routes.childTimeTable,
+              arguments: widget.student.id,
+              iconPath: UiUtils.getImagePath("timetable_icon.svg"),
+              title: UiUtils.getTranslatedLabel(context, timeTableKey)),
+          _buildMenuContainer(
+              route: Routes.holidays,
+              iconPath: UiUtils.getImagePath("holiday_icon.svg"),
+              title: UiUtils.getTranslatedLabel(context, holidaysKey)),
+          _buildMenuContainer(
+              route: Routes.exam,
+              arguments: widget.student.id,
+              iconPath: UiUtils.getImagePath("exam_icon.svg"),
+              title: UiUtils.getTranslatedLabel(context, examsKey)),
+          _buildMenuContainer(
+              route: Routes.childResults,
+              arguments: widget.student.id,
+              iconPath: UiUtils.getImagePath("result_icon.svg"),
+              title: UiUtils.getTranslatedLabel(context, resultKey)),
+          _buildMenuContainer(
+              route: Routes.childFees,
+              arguments: {
+                "studentDetails": widget.student,
+              },
+              iconPath: UiUtils.getImagePath("fees_icon.svg"),
+              title: UiUtils.getTranslatedLabel(context, feesKey)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuContainer(
+      {required String iconPath,
+      required String title,
+      Object? arguments,
+      required String route}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 15),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: () {
+          Navigator.of(context).pushNamed(route, arguments: arguments);
+        },
+        child: Container(
+          height: 80,
+          child: LayoutBuilder(builder: (context, boxConstraints) {
+            return Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(14),
+                  margin: EdgeInsets.symmetric(horizontal: 10.0),
+                  height: 60,
+                  child: SvgPicture.asset(iconPath),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSecondary
+                          .withOpacity(0.225),
+                      borderRadius: BorderRadius.circular(15.0)),
+                  width: boxConstraints.maxWidth * (0.225),
+                ),
+                SizedBox(
+                  width: boxConstraints.maxWidth * (0.025),
+                ),
+                SizedBox(
+                  width: boxConstraints.maxWidth * (0.475),
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15),
+                  ),
+                ),
+                Spacer(),
+                CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  radius: 17.5,
+                  child: Icon(
+                    Icons.arrow_forward,
+                    size: 22.5,
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                  ),
+                ),
+                SizedBox(
+                  width: boxConstraints.maxWidth * (0.035),
+                ),
+              ],
+            );
+          }),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                width: 1.0,
+                color:
+                    Theme.of(context).colorScheme.secondary.withOpacity(0.25),
+              )),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           _buildSubjectsAndInformationsContainer(),
+          _buildInformationAndMenu(),
           _buildAppBar(),
         ],
       ),
