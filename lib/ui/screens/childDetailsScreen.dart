@@ -360,11 +360,34 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          _buildSubjectsAndInformationsContainer(),
-          _buildInformationAndMenu(),
-          _buildAppBar(),
-        ],
-      ),
+          Align(
+                alignment: Alignment.topCenter,
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    top: UiUtils.getScrollViewTopPadding(
+                        context: context,
+                        appBarHeightPercentage:
+                            UiUtils.appBarMediumtHeightPercentage),
+                  ),
+                  child: BlocBuilder(
+                    builder: (context, state) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildSubjectsAndInformationsContainer(),
+                          SizedBox(
+                            height:
+                                MediaQuery.of(context).size.height * (0.025),
+                          ),
+                          _buildInformationAndMenu(),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+              _buildAppBar(),
+            ]),
     );
   }
 }
