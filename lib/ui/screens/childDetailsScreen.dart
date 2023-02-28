@@ -177,109 +177,118 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
   }
 
   Widget _buildSubjectsAndInformationsContainer() {
-    return SingleChildScrollView(
-      padding: EdgeInsets.only(
-          top: UiUtils.getScrollViewTopPadding(
-              context: context,
-              appBarHeightPercentage: UiUtils.appBarBiggerHeightPercentage)),
-      child: BlocBuilder<ChildSubjectsCubit, ChildSubjectsState>(
-        builder: (context, state) {
-          if (state is ChildSubjectsFetchSuccess) {
-            return Column(
-              children: [
-                StudentSubjectsContainer(
-                  subjects: context.read<ChildSubjectsCubit>().getSubjects(),
-                  subjectsTitleKey: subjectsKey,
-                  childId: widget.student.id,
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * (0.025),
-                ),
-              ],
-            );
-          }
-          if (state is ChildSubjectsFetchFailure) {
-            return Center(
-              child: ErrorContainer(
-                errorMessageCode: state.errorMessage,
-                onTapRetry: () {
-                  context
-                      .read<ChildSubjectsCubit>()
-                      .fetchChildSubjects(widget.student.id);
-                },
-              ),
-            );
-          }
-          return Column(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * (0.025),
-              ),
-              SubjectsShimmerLoadingContainer(),
-            ],
-          );
-        },
-      ),
-    );
+    return Align(
+        alignment: Alignment.topCenter,
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(
+              top: UiUtils.getScrollViewTopPadding(
+                  context: context,
+                  appBarHeightPercentage:
+                      UiUtils.appBarBiggerHeightPercentage)),
+          child: BlocBuilder<ChildSubjectsCubit, ChildSubjectsState>(
+            builder: (context, state) {
+              if (state is ChildSubjectsFetchSuccess) {
+                return Column(
+                  children: [
+                    StudentSubjectsContainer(
+                      subjects:
+                          context.read<ChildSubjectsCubit>().getSubjects(),
+                      subjectsTitleKey: subjectsKey,
+                      childId: widget.student.id,
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * (0.025),
+                    ),
+                  ],
+                );
+              }
+              if (state is ChildSubjectsFetchFailure) {
+                return Center(
+                  child: ErrorContainer(
+                    errorMessageCode: state.errorMessage,
+                    onTapRetry: () {
+                      context
+                          .read<ChildSubjectsCubit>()
+                          .fetchChildSubjects(widget.student.id);
+                    },
+                  ),
+                );
+              }
+              return Column(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * (0.025),
+                  ),
+                  SubjectsShimmerLoadingContainer(),
+                ],
+              );
+            },
+          ),
+        ));
   }
 
   Widget _buildInformationAndMenu() {
-    return SingleChildScrollView(
-      padding: EdgeInsets.only(
-          left: MediaQuery.of(context).size.width * (0.075),
-          right: MediaQuery.of(context).size.width * (0.075),
-          top: UiUtils.getScrollViewTopPadding(
-              context: context,
-              appBarHeightPercentage: UiUtils.appBarMediumtHeightPercentage)),
-      child: Column(
-        children: [
-          _buildMenuContainer(
-              route: Routes.childAssignments,
-              arguments: {
-                "childId": widget.student.id,
-                "subjects": context.read<ChildSubjectsCubit>().getSubjectsForAssignmentContainer()
-              },
-              iconPath: UiUtils.getImagePath("assignment_icon_parent.svg"),
-              title: UiUtils.getTranslatedLabel(context, assignmentsKey)),
-          _buildMenuContainer(
-              route: Routes.childTeachers,
-              arguments: widget.student.id,
-              iconPath: UiUtils.getImagePath("teachers_icon.svg"),
-              title: UiUtils.getTranslatedLabel(context, teachersKey)),
-          _buildMenuContainer(
-              route: Routes.childAttendance,
-              arguments: widget.student.id,
-              iconPath: UiUtils.getImagePath("attendance_icon.svg"),
-              title: UiUtils.getTranslatedLabel(context, attendanceKey)),
-          _buildMenuContainer(
-              route: Routes.childTimeTable,
-              arguments: widget.student.id,
-              iconPath: UiUtils.getImagePath("timetable_icon.svg"),
-              title: UiUtils.getTranslatedLabel(context, timeTableKey)),
-          _buildMenuContainer(
-              route: Routes.holidays,
-              iconPath: UiUtils.getImagePath("holiday_icon.svg"),
-              title: UiUtils.getTranslatedLabel(context, holidaysKey)),
-          _buildMenuContainer(
-              route: Routes.exam,
-              arguments: widget.student.id,
-              iconPath: UiUtils.getImagePath("exam_icon.svg"),
-              title: UiUtils.getTranslatedLabel(context, examsKey)),
-          _buildMenuContainer(
-              route: Routes.childResults,
-              arguments: widget.student.id,
-              iconPath: UiUtils.getImagePath("result_icon.svg"),
-              title: UiUtils.getTranslatedLabel(context, resultKey)),
-          _buildMenuContainer(
-              route: Routes.childFees,
-              arguments: {
-                "studentDetails": widget.student,
-              },
-              iconPath: UiUtils.getImagePath("fees_icon.svg"),
-              title: UiUtils.getTranslatedLabel(context, feesKey)),
-        ],
-      ),
-    );
+    return Align(
+        alignment: Alignment.topCenter,
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(
+              left: MediaQuery.of(context).size.width * (0.075),
+              right: MediaQuery.of(context).size.width * (0.075),
+              top: UiUtils.getScrollViewTopPadding(
+                  context: context,
+                  appBarHeightPercentage:
+                      UiUtils.appBarMediumtHeightPercentage)),
+          child: Column(
+            children: [
+              _buildMenuContainer(
+                  route: Routes.childAssignments,
+                  arguments: {
+                    "childId": widget.student.id,
+                    "subjects": context
+                        .read<ChildSubjectsCubit>()
+                        .getSubjectsForAssignmentContainer()
+                  },
+                  iconPath: UiUtils.getImagePath("assignment_icon_parent.svg"),
+                  title: UiUtils.getTranslatedLabel(context, assignmentsKey)),
+              _buildMenuContainer(
+                  route: Routes.childTeachers,
+                  arguments: widget.student.id,
+                  iconPath: UiUtils.getImagePath("teachers_icon.svg"),
+                  title: UiUtils.getTranslatedLabel(context, teachersKey)),
+              _buildMenuContainer(
+                  route: Routes.childAttendance,
+                  arguments: widget.student.id,
+                  iconPath: UiUtils.getImagePath("attendance_icon.svg"),
+                  title: UiUtils.getTranslatedLabel(context, attendanceKey)),
+              _buildMenuContainer(
+                  route: Routes.childTimeTable,
+                  arguments: widget.student.id,
+                  iconPath: UiUtils.getImagePath("timetable_icon.svg"),
+                  title: UiUtils.getTranslatedLabel(context, timeTableKey)),
+              _buildMenuContainer(
+                  route: Routes.holidays,
+                  iconPath: UiUtils.getImagePath("holiday_icon.svg"),
+                  title: UiUtils.getTranslatedLabel(context, holidaysKey)),
+              _buildMenuContainer(
+                  route: Routes.exam,
+                  arguments: widget.student.id,
+                  iconPath: UiUtils.getImagePath("exam_icon.svg"),
+                  title: UiUtils.getTranslatedLabel(context, examsKey)),
+              _buildMenuContainer(
+                  route: Routes.childResults,
+                  arguments: widget.student.id,
+                  iconPath: UiUtils.getImagePath("result_icon.svg"),
+                  title: UiUtils.getTranslatedLabel(context, resultKey)),
+              _buildMenuContainer(
+                  route: Routes.childFees,
+                  arguments: {
+                    "studentDetails": widget.student,
+                  },
+                  iconPath: UiUtils.getImagePath("fees_icon.svg"),
+                  title: UiUtils.getTranslatedLabel(context, feesKey)),
+            ],
+          ),
+        ));
   }
 
   Widget _buildMenuContainer(
@@ -358,35 +367,11 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Align(
-                alignment: Alignment.topCenter,
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(
-                    top: UiUtils.getScrollViewTopPadding(
-                        context: context,
-                        appBarHeightPercentage:
-                            UiUtils.appBarMediumtHeightPercentage),
-                  ),
-                  child: BlocBuilder(
-                    builder: (context, state) {
-                      return Column(
-                          children: [
-                          _buildSubjectsAndInformationsContainer(),
-                          SizedBox(
-                            height:
-                                MediaQuery.of(context).size.height * (0.025),
-                          ),
-                          _buildInformationAndMenu(),
-                          ],
-                        );
-                    },
-                  ),
-                ),
-              ),
-              _buildAppBar(),
-            ]),
+      body: Stack(children: [
+        _buildSubjectsAndInformationsContainer(),
+        _buildInformationAndMenu(),
+        _buildAppBar(),
+      ]),
     );
   }
 }
