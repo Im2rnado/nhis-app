@@ -177,7 +177,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
   }
 
   Widget _buildSubjectsAndInformationsContainer() {
-    return Padding(
+    return SingleChildScrollView(
       padding: EdgeInsets.only(
           top: UiUtils.getScrollViewTopPadding(
               context: context,
@@ -224,7 +224,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
   }
 
   Widget _buildInformationAndMenu() {
-    return Padding(
+    return SingleChildScrollView(
       padding: EdgeInsets.only(
           left: MediaQuery.of(context).size.width * (0.075),
           right: MediaQuery.of(context).size.width * (0.075),
@@ -237,9 +237,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
               route: Routes.childAssignments,
               arguments: {
                 "childId": widget.student.id,
-                "subjects": context
-                    .read<ChildSubjectsCubit>()
-                    .getSubjectsForAssignmentContainer()
+                "subjects": context.read<ChildSubjectsCubit>().getSubjectsForAssignmentContainer()
               },
               iconPath: UiUtils.getImagePath("assignment_icon_parent.svg"),
               title: UiUtils.getTranslatedLabel(context, assignmentsKey)),
@@ -360,14 +358,12 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: [
-        _buildSubjectsAndInformationsContainer(),
-        SizedBox(
-          height: MediaQuery.of(context).size.height * (0.025),
-        ),
-        _buildInformationAndMenu(),
-        _buildAppBar(),
-      ]),
+      body: Stack(
+        children: [
+          _buildInformationAndMenu(),
+          _buildAppBar(),
+        ],
+      ),
     );
   }
 }
