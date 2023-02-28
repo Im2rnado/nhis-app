@@ -361,22 +361,11 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: BlocBuilder(
-            builder: (context, state) {
-              return Column(
-                children: [
-                  _buildSubjectsAndInformationsContainer(),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * (0.025),
-                  ),
-                  _buildInformationAndMenu(),
-                ],
-              );
-            },
-          ),
+        _buildSubjectsAndInformationsContainer(),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * (0.025),
         ),
+        _buildInformationAndMenu(),
         _buildAppBar(),
       ]),
     );
