@@ -372,16 +372,15 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                   child: BlocBuilder(
                     builder: (context, state) {
                       return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                          children: [
                           _buildSubjectsAndInformationsContainer(),
                           SizedBox(
                             height:
                                 MediaQuery.of(context).size.height * (0.025),
                           ),
                           _buildInformationAndMenu(),
-                        ],
-                      );
+                          ],
+                        );
                     },
                   ),
                 ),
